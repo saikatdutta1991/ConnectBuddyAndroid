@@ -1,28 +1,32 @@
 import React, { Component } from 'react';
-import { Container, Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
+import { Root } from "native-base";
+import { createAppContainer } from "react-navigation";
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import Login from "./screens/Login";
+import Home from "./screens/Home";
+import SideBar from "./screens/SideBar";
 
-export default class App extends Component {
 
-    render() {
-        return (
-            <Container>
-                <Header>
-                    <Left>
-                        <Button transparent>
-                            <Icon name='arrow-back' />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>Header</Title>
-                    </Body>
-                    <Right>
-                        <Button transparent>
-                            <Icon name='menu' />
-                        </Button>
-                    </Right>
-                </Header>
-            </Container>
-        );
+const Drawer = createDrawerNavigator(
+    {
+        Login: { screen: Login },
+        Home: { screen: Home }
+    },
+    {
+        initialRouteName: "Login",
+        contentOptions: {
+            activeTintColor: "#e91e63"
+        },
+        contentComponent: props => <SideBar {...props} />
     }
+);
 
+const AppContainer = createAppContainer(Drawer);
+
+export default () => {
+    return (
+        <Root>
+            <AppContainer />
+        </Root>
+    );
 }
