@@ -14,6 +14,11 @@ const datas = [
         icon: "lock",
     },
     {
+        name: "Chat",
+        route: "ChatUsers",
+        icon: "comments",
+    },
+    {
         name: "Settings",
         route: "Settings",
         icon: "cog",

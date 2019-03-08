@@ -5,12 +5,14 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 import Login from "./screens/Login";
 import Home from "./screens/Home";
 import SideBar from "./screens/SideBar";
+import ChatScreens from "./screens/chat/index"
 
 
 const Drawer = createDrawerNavigator(
     {
         Login: { screen: Login },
-        Home: { screen: Home }
+        Home: { screen: Home },
+        ChatScreens: { screen: ChatScreens }
     },
     {
         initialRouteName: "Login",
