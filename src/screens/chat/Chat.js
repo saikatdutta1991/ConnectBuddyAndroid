@@ -11,7 +11,7 @@ export default class Chat extends Component {
         let userid = this.props.navigation.getParam('userid', undefined)
         let user = Data.findUserById(userid);
         let currentUser = Data.getCurrentUser();
-        this.state = { user: user, currentUser: currentUser }
+        this.state = { user: user, currentUser: currentUser, message: '' }
     }
 
     _keyExtractor = (item, index) => `${item.id}`;
@@ -49,6 +49,17 @@ export default class Chat extends Component {
 
     }
 
+
+    _sendBtnPressed = () => {
+        alert(`Your Message : ${this.state.message}`);
+        this.flatList.scrollToEnd({ animated: true })
+    }
+
+    _handleMessageInputChange = (message) => {
+        this.setState({ message: message })
+    }
+
+
     render() {
 
         return (
@@ -80,20 +91,26 @@ export default class Chat extends Component {
                     </Right>
                 </Header>
 
-                <Content>
-                    <FlatList
-                        data={this.state.user.messages}
-                        keyExtractor={this._keyExtractor}
-                        renderItem={this._renderItem}
-                    />
-                </Content>
+
+                <FlatList
+                    data={this.state.user.messages}
+                    keyExtractor={this._keyExtractor}
+                    renderItem={this._renderItem}
+                    ref={ref => this.flatList = ref}
+                    onContentSizeChange={() => this.flatList.scrollToEnd({ animated: true })}
+                    onLayout={() => this.flatList.scrollToEnd({ animated: true })}
+                />
+
 
 
                 <Footer style={{ backgroundColor: 'transparent', marginBottom: 5, marginLeft: 5, marginRight: 5 }}>
                     <Body>
                         <Item rounded>
-                            <Input placeholder='Type a message' style={{ paddingLeft: 15 }} />
-                            <Button transparent>
+                            <Input placeholder='Type a message' style={{ paddingLeft: 15 }}
+                                onChangeText={this._handleMessageInputChange}
+                                value={this.state.message}
+                            />
+                            <Button transparent onPress={this._sendBtnPressed}>
                                 <Icon
                                     active
                                     name='paper-plane'
