@@ -1,21 +1,24 @@
 import React, { Component } from 'react';
 import { Root } from "native-base";
-import { createAppContainer } from "react-navigation";
+import { createAppContainer, createSwitchNavigator, createStackNavigator } from "react-navigation";
 import { createDrawerNavigator } from 'react-navigation-drawer';
+import AuthLoadingScreen from "./screens/AuthLoading";
 import Login from "./screens/Login";
+import Register from "./screens/Register";
 import Home from "./screens/Home";
 import SideBar from "./screens/SideBar";
-import ChatScreens from "./screens/chat/index"
+import ChatScreens from "./screens/chat/index";
+import LogoutScreen from "./screens/Logout";
 
 
-const Drawer = createDrawerNavigator(
+const appDrawerNavigator = createDrawerNavigator(
     {
-        Login: { screen: Login },
         Home: { screen: Home },
+        Logout: { screen: LogoutScreen },
         ChatScreens: { screen: ChatScreens }
     },
     {
-        initialRouteName: "Login",
+        initialRouteName: "Home",
         contentOptions: {
             activeTintColor: "#e91e63"
         },
@@ -23,7 +26,34 @@ const Drawer = createDrawerNavigator(
     }
 );
 
-const AppContainer = createAppContainer(Drawer);
+const AuthStack = createStackNavigator(
+    {
+        Login: { screen: Login },
+        Register: { screen: Register },
+    },
+    {
+        initialRouteName: "Login",
+        headerMode: 'none',
+        navigationOptions: {
+            headerVisible: false,
+        }
+    }
+);
+
+
+const switchNavigator = createSwitchNavigator(
+    {
+        AuthLoading: AuthLoadingScreen,
+        App: appDrawerNavigator,
+        Auth: AuthStack,
+    },
+    {
+        initialRouteName: 'AuthLoading',
+    }
+);
+
+
+const AppContainer = createAppContainer(switchNavigator);
 
 export default () => {
     return (

@@ -7,33 +7,34 @@ import logo from '../images/logo.png';
 import Services from '../Services';
 import AuthUser from "../AuthUser";
 
-export default class Login extends Component {
+export default class Register extends Component {
+
 
     constructor(props) {
         super(props);
         this.state = {
             registerActivity: false,
             isPassVisible: false,
+            name: '',
             email: '',
             password: ''
-        };
+        }
     }
-
 
     _goForgetPassword = () => {
         alert('Forget password not implemented yet');
     }
 
-    _goRegister = () => {
-        this.props.navigation.navigate('Register')
+    _goLogin = () => {
+        this.props.navigation.navigate('Login')
     }
 
-    _doLogin = async () => {
+    _doRegister = async () => {
 
-        /** call login api */
+        /** call register api */
         this.setState({ registerActivity: true });
 
-        let response = await Services.login(this.state.email, this.state.password);
+        let response = await Services.register(this.state.name, this.state.email, this.state.password);
 
         this.setState({ registerActivity: false });
 
@@ -61,7 +62,7 @@ export default class Login extends Component {
             AuthUser.setLatitude(`${response.data.user.location.coordinates[1]}`);
 
             Toast.show({
-                text: 'You have been loggedin successfully',
+                text: 'You have been registered successfully',
                 buttonText: 'Okay',
                 type: "success"
             })
@@ -71,6 +72,8 @@ export default class Login extends Component {
 
             return;
         }
+
+
     }
 
 
@@ -95,8 +98,12 @@ export default class Login extends Component {
 
 
                         <Item rounded style={[styles.item, styles.itemInput]}>
+                            <Icon active name='text-width' type='FontAwesome' />
+                            <Input placeholder='Name' value={this.state.name} onChangeText={(text) => this.setState({ name: text })} />
+                        </Item>
+                        <Item rounded style={[styles.item, styles.itemInput]}>
                             <Icon active name='envelope' type='FontAwesome' />
-                            <Input placeholder='Email' value={this.state.email} onChangeText={(text) => this.setState({ email: text })} />
+                            <Input placeholder='Name' value={this.state.email} onChangeText={(text) => this.setState({ email: text })} />
                         </Item>
                         <Item rounded style={[styles.item, styles.itemInput]}>
                             <Icon active name='key' type='FontAwesome' />
@@ -108,15 +115,16 @@ export default class Login extends Component {
                             }
                         </Item>
 
-                        <Button rounded dark block style={[styles.item, styles.loginBtn]} onPress={this._doLogin}>
-                            <Text>Login</Text>
+                        <Button rounded dark block style={[styles.item, styles.loginBtn]} onPress={this._doRegister}>
+                            <Text>Register</Text>
                             {this.state.registerActivity ? <ActivityIndicator size="small" color="#00ff00" /> : null}
+
                         </Button>
 
                         <Item style={{ borderColor: 'transparent' }}>
                             <Left>
-                                <Button transparent onPress={this._goRegister}>
-                                    <Text uppercase={false} style={styles.buttomButtonsText}>Create Account</Text>
+                                <Button transparent onPress={this._goLogin}>
+                                    <Text uppercase={false} style={styles.buttomButtonsText}>Account Login</Text>
                                 </Button>
                             </Left>
 
@@ -156,5 +164,4 @@ const styles = StyleSheet.create({
     loginBtn: {
         marginTop: 30
     }
-
 });

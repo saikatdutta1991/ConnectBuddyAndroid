@@ -24,7 +24,6 @@ export default class Home extends Component {
                 <Grid>
                     <Col style={styles.container}>
                         <Text>Home</Text>
-
                     </Col>
                 </Grid>
 

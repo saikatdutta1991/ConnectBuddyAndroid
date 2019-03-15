@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Platform, FlatList, Dimensions } from 'react-native';
 import { Content, Text, ListItem, Icon, Container, Left, Body, Right, Thumbnail, Button } from "native-base";
+import AuthUser from "../AuthUser";
 
 const datas = [
     {
@@ -33,10 +34,32 @@ const datas = [
         route: "Payment",
         icon: "credit-card",
     },
+    {
+        name: "Logout",
+        route: "Logout",
+        icon: "power-off",
+    },
 
 ];
 
 export default class SideBar extends Component {
+
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            authuser_image: '',
+            authuser_name: ''
+        };
+    }
+
+
+    async componentDidMount() {
+        this.setState({
+            authuser_image: await AuthUser.getImageurl(),
+            authuser_name: await AuthUser.getName()
+        });
+    }
 
     _keyExtractor = (item, index) => item.name;
 
@@ -70,10 +93,10 @@ export default class SideBar extends Component {
 
                     <ListItem thumbnail noBorder style={styles.listHeader}>
                         <Left>
-                            <Thumbnail source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLKjeyA0x4bESIzB9GRujRldkqc37siZ7qM2xHL6rQmjVNqc24' }} />
+                            <Thumbnail source={{ uri: this.state.authuser_image }} />
                         </Left>
                         <Body>
-                            <Text style={styles.headerTextName}>Saikat Dutta</Text>
+                            <Text style={styles.headerTextName}>{this.state.authuser_name}</Text>
                             <Text note style={styles.headerTextNote}>V2.0</Text>
                         </Body>
                         <Right>
