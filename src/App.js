@@ -9,16 +9,18 @@ import Home from "./screens/Home";
 import SideBar from "./screens/SideBar";
 import ChatScreens from "./screens/chat/index";
 import LogoutScreen from "./screens/Logout";
+import ProfileScreen from "./screens/Profile";
 
 
 const appDrawerNavigator = createDrawerNavigator(
     {
         Home: { screen: Home },
+        Profile: { screen: ProfileScreen },
         Logout: { screen: LogoutScreen },
         ChatScreens: { screen: ChatScreens }
     },
     {
-        initialRouteName: "Home",
+        initialRouteName: "Profile",
         contentOptions: {
             activeTintColor: "#e91e63"
         },

@@ -5,7 +5,7 @@ import { Col, Grid } from 'react-native-easy-grid';
 import bgSrc from '../images/wallpaper.png';
 import logo from '../images/logo.png';
 import Services from '../Services';
-import AuthUser from "../AuthUser";
+import authuser from "../AuthUser";
 
 export default class Login extends Component {
 
@@ -52,13 +52,12 @@ export default class Login extends Component {
         if (response.success) {
 
             /** store auth user data */
-            AuthUser.setId(response.data.user._id);
-            AuthUser.setAuthToken(response.data.authToken);
-            AuthUser.setName(response.data.user.name);
-            AuthUser.setEmail(response.data.user.email);
-            AuthUser.setImageurl(response.data.user.image_url);
-            AuthUser.setLongitude(`${response.data.user.location.coordinates[0]}`);
-            AuthUser.setLatitude(`${response.data.user.location.coordinates[1]}`);
+            await authuser.setId(response.data.user._id)
+                .setAuthToken(response.data.authToken)
+                .setName(response.data.user.name)
+                .setEmail(response.data.user.email)
+                .setImageurl(response.data.user.image_url)
+                .save();
 
             Toast.show({
                 text: 'You have been loggedin successfully',

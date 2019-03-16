@@ -1,73 +1,82 @@
 import { AsyncStorage } from 'react-native';
 
-export default class AuthUser {
+class AuthUser {
 
-    static setId(id) {
-        AsyncStorage.setItem('authuser:id', id);
+    setId(id) {
+        this.id = id;
+        return this;
     }
 
-    static async getId() {
-        return await AsyncStorage.getItem('authuser:id')
-    }
-
-
-    static setName(name) {
-        AsyncStorage.setItem('authuser:name', name);
-    }
-
-    static async getName() {
-        return await AsyncStorage.getItem('authuser:name')
-    }
-
-    static setEmail(email) {
-        AsyncStorage.setItem('authuser:email', email);
-    }
-
-    static async getEmail() {
-        return await AsyncStorage.getItem('authuser:email')
+    getId() {
+        return this.id;
     }
 
 
-    static setLatitude(latitude) {
-        AsyncStorage.setItem('authuser:latitude', latitude);
+    setName(name) {
+        this.name = name;
+        return this;
     }
 
-    static async getLatitude() {
-        return await AsyncStorage.getItem('authuser:latitude')
+    getName() {
+        return this.name;
     }
 
-    static setLongitude(longitude) {
-        AsyncStorage.setItem('authuser:longitude', longitude);
+    setEmail(email) {
+        this.email = email;
+        return this;
     }
 
-    static async getLongitude() {
-        return await AsyncStorage.getItem('authuser:longitude')
-    }
-
-
-    static setAuthToken(authtoken) {
-        AsyncStorage.setItem('authuser:authtoken', authtoken);
-    }
-
-    static async getAuthToken() {
-        return await AsyncStorage.getItem('authuser:authtoken')
+    getEmail() {
+        return this.email;
     }
 
 
-    static setImageurl(imageurl) {
-        AsyncStorage.setItem('authuser:imageurl', imageurl);
+    setAuthToken(authtoken) {
+        this.authtoken = authtoken;
+        return this;
     }
 
-    static async getImageurl() {
-        return await AsyncStorage.getItem('authuser:imageurl')
-    }
-
-
-    static async isAuthenticated() {
-        let token = await this.getAuthToken();
-        return token ? true : false;
+    getAuthToken() {
+        return this.authtoken;
     }
 
 
+    setImageurl(imageurl) {
+        this.imageurl = imageurl;
+        return this;
+    }
+
+    getImageurl() {
+        return this.imageurl;
+    }
+
+
+    isAuthenticated() {
+        return !!this.getAuthToken();
+    }
+
+    async save() {
+
+        await AsyncStorage.setItem('authuser:id', this.id);
+        await AsyncStorage.setItem('authuser:name', this.name);
+        await AsyncStorage.setItem('authuser:email', this.email);
+        await AsyncStorage.setItem('authuser:authtoken', this.authtoken);
+        await AsyncStorage.setItem('authuser:imageurl', this.imageurl);
+
+        return true;
+    }
+
+
+    async load() {
+        this.id = await AsyncStorage.getItem('authuser:id');
+        this.name = await AsyncStorage.getItem('authuser:name');
+        this.email = await AsyncStorage.getItem('authuser:email');
+        this.authtoken = await AsyncStorage.getItem('authuser:authtoken');
+        this.imageurl = await AsyncStorage.getItem('authuser:imageurl');
+    }
 
 }
+
+
+module.exports = new AuthUser();
+

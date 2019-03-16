@@ -4,7 +4,7 @@ import { Container, Text } from 'native-base';
 import { Col, Grid } from 'react-native-easy-grid';
 import bgSrc from '../images/wallpaper.png';
 import logo from '../images/logo.png';
-import AuthUser from "../AuthUser";
+import authuser from "../AuthUser";
 
 export default class AuthLoading extends React.Component {
     constructor(props) {
@@ -18,7 +18,9 @@ export default class AuthLoading extends React.Component {
         /** settings loaing text */
         this.setState({ loadingText: 'Checking Auth ..' });
 
-        if (await AuthUser.isAuthenticated()) {
+        await authuser.load();
+
+        if (authuser.isAuthenticated()) {
             setTimeout(() => { this.props.navigation.navigate('App'); }, 1000)
         } else {
             setTimeout(() => { this.props.navigation.navigate('Auth'); }, 1000)

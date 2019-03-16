@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Platform, FlatList, Dimensions } from 'react-native';
 import { Content, Text, ListItem, Icon, Container, Left, Body, Right, Thumbnail, Button } from "native-base";
-import AuthUser from "../AuthUser";
+import authuser from "../AuthUser";
 
 const datas = [
     {
@@ -48,17 +48,9 @@ export default class SideBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            authuser_image: '',
-            authuser_name: ''
+            authuser_image: authuser.getImageurl(),
+            authuser_name: authuser.getName()
         };
-    }
-
-
-    async componentDidMount() {
-        this.setState({
-            authuser_image: await AuthUser.getImageurl(),
-            authuser_name: await AuthUser.getName()
-        });
     }
 
     _keyExtractor = (item, index) => item.name;
