@@ -20,7 +20,7 @@ const appDrawerNavigator = createDrawerNavigator(
         ChatScreens: { screen: ChatScreens }
     },
     {
-        initialRouteName: "Profile",
+        initialRouteName: "Home",
         contentOptions: {
             activeTintColor: "#e91e63"
         },

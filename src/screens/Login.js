@@ -59,12 +59,6 @@ export default class Login extends Component {
                 .setImageurl(response.data.user.image_url)
                 .save();
 
-            Toast.show({
-                text: 'You have been loggedin successfully',
-                buttonText: 'Okay',
-                type: "success"
-            })
-
             /** redirect to authloading */
             this.props.navigation.navigate('AuthLoading');
 

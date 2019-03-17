@@ -10,11 +10,6 @@ const datas = [
         icon: "home"
     },
     {
-        name: "Login",
-        route: "Login",
-        icon: "lock",
-    },
-    {
         name: "Chat",
         route: "ChatUsers",
         icon: "comments",

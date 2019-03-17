@@ -60,12 +60,6 @@ export default class Register extends Component {
                 .setImageurl(response.data.user.image_url)
                 .save();
 
-            Toast.show({
-                text: 'You have been registered successfully',
-                buttonText: 'Okay',
-                type: "success"
-            })
-
             /** redirect to authloading */
             this.props.navigation.navigate('AuthLoading');
 
