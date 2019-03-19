@@ -13,16 +13,29 @@ import ProfileScreen from "./screens/Profile";
 import FriendRequestSendScreen from "./screens/FriendRequestSend";
 
 
-const appDrawerNavigator = createDrawerNavigator(
+const homeStack = createStackNavigator(
     {
         Home: { screen: Home },
-        FriendRequestSend: { screen: FriendRequestSendScreen },
+        FriendRequestSend: { screen: FriendRequestSendScreen }
+    },
+    {
+        initialRouteName: "Home",
+        headerMode: 'none',
+        navigationOptions: {
+            headerVisible: false,
+        }
+    }
+);
+
+const appDrawerNavigator = createDrawerNavigator(
+    {
+        HomeStack: homeStack,
         Profile: { screen: ProfileScreen },
         Logout: { screen: LogoutScreen },
         ChatScreens: { screen: ChatScreens }
     },
     {
-        initialRouteName: "Home",
+        initialRouteName: "HomeStack",
         contentOptions: {
             activeTintColor: "#e91e63"
         },

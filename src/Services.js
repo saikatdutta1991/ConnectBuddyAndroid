@@ -2,6 +2,35 @@ import Endpoints from "./Endpoints";
 import authuser from "./AuthUser";
 import Geolocation from 'react-native-geolocation-service';
 
+
+module.exports.sendFriendRequest = async (userid) => {
+
+    console.log('Service::sendFriendRequest()');
+
+    let token = authuser.getAuthToken();
+
+    return fetch(Endpoints.sendFriendRequest, {
+        method: 'POST',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userid: userid
+        })
+    }).then(response => {
+        console.log('Service::sendFriendRequest(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::sendFriendRequest(): err', err);
+        return false;
+    })
+
+
+}
+
+
+
 module.exports.getCurrentPosition = async () => {
 
     return new Promise(function (resolve, reject) {

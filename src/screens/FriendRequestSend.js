@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Image, View } from 'react-native';
-import { Container, Text, Button, H1, H3, Thumbnail } from 'native-base';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { Container, Text, Button, H1, H3, Thumbnail, Toast } from 'native-base';
+import Services from '../Services';
 
 export default class AuthLoading extends React.Component {
 
@@ -24,13 +25,53 @@ export default class AuthLoading extends React.Component {
     }
 
 
-    async componentDidMount() {
-
-
-    }
-
     _cancel = () => {
         this.props.navigation.navigate('Home');
+    }
+
+    /**
+     * send friend request to the current user
+     */
+    _sendFriendRequest = async () => {
+
+        this.setState({ requestSendIndicator: true });
+        let response = await Services.sendFriendRequest(this.state.user._id);
+        this.setState({ requestSendIndicator: false });
+
+        /** check session expires */
+        if (!response.success && response.type == 'session_expired') {
+            this.props.navigation.navigate('Logout');
+            return false;
+        }
+
+        if (response == false) {
+            Toast.show({
+                text: 'Send request failed',
+                buttonText: 'Okay',
+                type: "danger"
+            })
+            return;
+        }
+
+        if (!response.success) {
+            Toast.show({
+                text: response.data.userid,
+                buttonText: 'Okay',
+                type: "danger"
+            })
+            return;
+        }
+
+        Toast.show({
+            text: 'Friend request sent successfully',
+            buttonText: 'Okay',
+            type: "success"
+        })
+
+        setTimeout(() => {
+            this._cancel();
+        }, 500);
+
     }
 
 
@@ -63,8 +104,9 @@ export default class AuthLoading extends React.Component {
                     </View>
 
                     <View style={{ flex: 1 }}>
-                        <Button rounded success block style={{ marginLeft: 5 }}>
+                        <Button rounded success block style={{ marginLeft: 5 }} onPress={this._sendFriendRequest}>
                             <Text>Send Request</Text>
+                            {this.state.requestSendIndicator ? <ActivityIndicator size="small" color='white' /> : null}
                         </Button>
                     </View>
                 </View>

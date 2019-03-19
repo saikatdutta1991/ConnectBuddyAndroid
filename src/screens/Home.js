@@ -67,7 +67,12 @@ export default class Home extends Component {
             return false;
         }
 
-        this.setState({ nearbyusers: response.data, headerActivityIndicator: '' });
+        if (response.success) {
+            this.setState({ nearbyusers: response.data, headerActivityIndicator: '' });
+        } else {
+            this.setState({ nearbyusers: [], headerActivityIndicator: '' });
+        }
+
     }
 
 
