@@ -10,11 +10,13 @@ import SideBar from "./screens/SideBar";
 import ChatScreens from "./screens/chat/index";
 import LogoutScreen from "./screens/Logout";
 import ProfileScreen from "./screens/Profile";
+import FriendRequestSendScreen from "./screens/FriendRequestSend";
 
 
 const appDrawerNavigator = createDrawerNavigator(
     {
         Home: { screen: Home },
+        FriendRequestSend: { screen: FriendRequestSendScreen },
         Profile: { screen: ProfileScreen },
         Logout: { screen: LogoutScreen },
         ChatScreens: { screen: ChatScreens }

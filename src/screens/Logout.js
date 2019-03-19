@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, Image, Dimensions, ProgressBarAndroid, AsyncStorage } from 'react-native';
+import { StyleSheet, Image, ProgressBarAndroid, AsyncStorage } from 'react-native';
 import { Container, Text } from 'native-base';
 import { Col, Grid } from 'react-native-easy-grid';
-import bgSrc from '../images/wallpaper.png';
 import logo from '../images/logo.png';
+import customColor from '../../native-base-theme/variables/customColor';
 
 export default class AuthLoading extends React.Component {
     constructor(props) {
@@ -22,30 +22,16 @@ export default class AuthLoading extends React.Component {
     // Render any loading content that you like here
     render() {
         return (
-            <Container>
-                <Grid>
-                    <Col style={styles.container}>
+            <Container style={styles.container}>
 
-                        <Image style={{
-                            width: Dimensions.get('window').width,
-                            height: '100%',
-                            resizeMode: 'cover',
-                            position: 'absolute',
-                        }} source={bgSrc} />
+                <Image source={logo}
+                    style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 50 }}
+                />
 
-
-                        <Image source={logo}
-                            style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 30 }}
-                        />
-
-                        <ProgressBarAndroid styleAttr="Horizontal" color="#FFFFFF"
-                            style={{ width: 250, height: 15 }}
-                        />
-                        <Text style={{ color: 'white', fontSize: 12 }}>{this.state.loadingText}</Text>
-
-                    </Col>
-                </Grid>
-
+                <ProgressBarAndroid styleAttr="Horizontal" color={customColor.brandPrimary}
+                    style={{ width: 250, height: 15 }}
+                />
+                <Text style={{ color: customColor.brandPrimary, fontSize: 12 }}>{this.state.loadingText}</Text>
             </Container>
         );
     }

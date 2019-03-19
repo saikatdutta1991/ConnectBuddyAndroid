@@ -1,5 +1,51 @@
 import Endpoints from "./Endpoints";
 import authuser from "./AuthUser";
+import Geolocation from 'react-native-geolocation-service';
+
+module.exports.getCurrentPosition = async () => {
+
+    return new Promise(function (resolve, reject) {
+
+        Geolocation.getCurrentPosition(
+            (position) => {
+                resolve(position);
+            },
+            (error) => {
+                reject(error)
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, showLocationDialog: true, distanceFilter: 0 }
+        );
+    })
+}
+
+
+/**
+ * get nearby users
+ */
+module.exports.getNearbyUsers = async (latitude, longitude, distance) => {
+
+    console.log('Service::getNearbyUsers()');
+
+    let token = authuser.getAuthToken();
+    let endpoint = `${Endpoints.getNearbyUsers}?latitude=${latitude}&longitude=${longitude}&distance=${distance}`;
+
+    return fetch(endpoint, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        }
+    }).then(response => {
+        console.log('Service::getNearbyUsers(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::getNearbyUsers(): err', err);
+        return false;
+    })
+
+}
+
+
 
 
 /**

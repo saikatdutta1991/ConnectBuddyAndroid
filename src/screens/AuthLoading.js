@@ -1,16 +1,52 @@
 import React from 'react';
-import { StyleSheet, Image, Dimensions, ProgressBarAndroid } from 'react-native';
+import { StyleSheet, Image, ProgressBarAndroid } from 'react-native';
 import { Container, Text } from 'native-base';
-import { Col, Grid } from 'react-native-easy-grid';
-import bgSrc from '../images/wallpaper.png';
 import logo from '../images/logo.png';
 import authuser from "../AuthUser";
+import Geolocation from 'react-native-geolocation-service';
+import { PermissionsAndroid } from 'react-native';
+import gStorage from "../GInmemStorage";
+import customColor from '../../native-base-theme/variables/customColor';
 
 export default class AuthLoading extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = { loadingText: 'Loading ..' };
     }
+
+
+    _requestLocationPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
+
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (err) {
+            return false;
+        }
+    }
+
+
+    _getCurrentPosition = async () => {
+
+        return new Promise(function (resolve, reject) {
+
+            Geolocation.getCurrentPosition(
+                (position) => {
+                    resolve(position);
+                },
+                (error) => {
+                    reject(error)
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000, showLocationDialog: true, distanceFilter: 0 }
+            );
+        })
+    }
+
 
 
     async componentDidMount() {
@@ -18,13 +54,40 @@ export default class AuthLoading extends React.Component {
         /** settings loaing text */
         this.setState({ loadingText: 'Checking Auth ..' });
 
+        /** load authuser from asyncstorage */
         await authuser.load();
 
-        if (authuser.isAuthenticated()) {
-            setTimeout(() => { this.props.navigation.navigate('App'); }, 1000)
-        } else {
+        /** check user is authenticated */
+        if (!authuser.isAuthenticated()) {
             setTimeout(() => { this.props.navigation.navigate('Auth'); }, 1000)
+            return;
         }
+
+        /** make status for geolocation permisstion */
+        this.setState({ loadingText: 'GeoLocation Permission ..' });
+
+        /** if hasLocationPermission false, then ask again */
+        let hasLocationPermission = false;
+        while (!hasLocationPermission) {
+            hasLocationPermission = await this._requestLocationPermission();
+        }
+
+        /** make status for current location fetching */
+        this.setState({ loadingText: 'Fetching current location ..' });
+
+        /** until current position is returning */
+        let position;
+        while (!position) {
+            try {
+                position = await this._getCurrentPosition();
+            } catch (error) { }
+        }
+
+        /** store current posstion to global storage */
+        gStorage.currentPosition = position;
+
+        /** redirect to main app */
+        setTimeout(() => { this.props.navigation.navigate('App'); }, 1000)
 
     }
 
@@ -32,30 +95,15 @@ export default class AuthLoading extends React.Component {
     // Render any loading content that you like here
     render() {
         return (
-            <Container>
-                <Grid>
-                    <Col style={styles.container}>
+            <Container style={styles.container}>
+                <Image source={logo}
+                    style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 50 }}
+                />
 
-                        <Image style={{
-                            width: Dimensions.get('window').width,
-                            height: '100%',
-                            resizeMode: 'cover',
-                            position: 'absolute',
-                        }} source={bgSrc} />
-
-
-                        <Image source={logo}
-                            style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 30 }}
-                        />
-
-                        <ProgressBarAndroid styleAttr="Horizontal" color="#FFFFFF"
-                            style={{ width: 250, height: 15 }}
-                        />
-                        <Text style={{ color: 'white', fontSize: 12 }}>{this.state.loadingText}</Text>
-
-                    </Col>
-                </Grid>
-
+                <ProgressBarAndroid styleAttr="Horizontal" color={customColor.brandPrimary}
+                    style={{ width: 250, height: 15 }}
+                />
+                <Text style={{ color: customColor.brandPrimary, fontSize: 12 }}>{this.state.loadingText}</Text>
             </Container>
         );
     }

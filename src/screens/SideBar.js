@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Platform, FlatList, Dimensions } from 'react-native';
+import { StyleSheet, Platform, FlatList } from 'react-native';
 import { Content, Text, ListItem, Icon, Container, Left, Body, Right, Thumbnail, Button } from "native-base";
 import authuser from "../AuthUser";
+import gStorage from "../GInmemStorage";
+
 
 const datas = [
     {
@@ -15,19 +17,9 @@ const datas = [
         icon: "comments",
     },
     {
-        name: "Settings",
-        route: "Settings",
-        icon: "cog",
-    },
-    {
         name: "Profile",
         route: "Profile",
         icon: "user",
-    },
-    {
-        name: "Payment",
-        route: "Payment",
-        icon: "credit-card",
     },
     {
         name: "Logout",
@@ -47,6 +39,15 @@ export default class SideBar extends Component {
             authuser_name: authuser.getName()
         };
     }
+
+
+    componentDidMount() {
+
+        /** store main manu state to global storage for change from another component */
+        gStorage.mainMenu = this;
+    }
+
+
 
     _keyExtractor = (item, index) => item.name;
 

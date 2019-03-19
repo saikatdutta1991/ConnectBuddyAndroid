@@ -6,6 +6,7 @@ import CustomColor from '../../native-base-theme/variables/customColor';
 import authuser from "../AuthUser";
 import ImagePicker from 'react-native-image-crop-picker';
 import Services from '../Services';
+import gStorage from "../GInmemStorage";
 
 export default class Proflie extends Component {
 
@@ -80,18 +81,18 @@ export default class Proflie extends Component {
 
 
         /** successs  */
-        await authuser.setId(response.data.user._id)
-            .setName(response.data.user.name)
+        await authuser.setName(response.data.user.name)
             .setEmail(response.data.user.email)
-            .setImageurl(response.data.user.image_url)
             .save();
 
         this.setState({
             authuser_email: authuser.getEmail(),
             authuser_name: authuser.getName(),
-            authuser_imageurl: authuser.getImageurl(),
             authuser_newpassword: ''
         });
+
+        /** set image and name to sidebar */
+        gStorage.mainMenu.setState({ authuser_name: authuser.getName() });
 
         Toast.show({
             text: 'Profile updated successfully',
@@ -163,6 +164,9 @@ export default class Proflie extends Component {
 
             this.setState({ authuser_imageurl: image.path })
 
+            /** set image and name to sidebar */
+            gStorage.mainMenu.setState({ authuser_image: image.path });
+
 
         }).catch(err => {
             Toast.show({
@@ -218,6 +222,9 @@ export default class Proflie extends Component {
 
             this.setState({ authuser_imageurl: image.path })
 
+            /** set image and name to sidebar */
+            gStorage.mainMenu.setState({ authuser_image: image.path });
+
 
         }).catch(err => {
             Toast.show({
@@ -239,7 +246,7 @@ export default class Proflie extends Component {
                     <View style={styles.cameraIconWrapper}>
                         {
                             this.state.uploadActivity ?
-                                <ActivityIndicator size="small" color="#00ff00" />
+                                <ActivityIndicator size="small" color={CustomColor.brandPrimary} />
                                 :
                                 <Icon name="camera" type='FontAwesome' onPress={this._onUpdateImagePress} />
                         }
@@ -280,20 +287,20 @@ export default class Proflie extends Component {
                     {this._imageContent()}
 
                     <View style={{ padding: 15 }}>
-                        <Item rounded style={[styles.item, styles.itemInput]}>
-                            <Icon active name='text-width' type='FontAwesome' />
-                            <Input placeholder='Name' value={this.state.authuser_name} onChangeText={(text) => this.setState({ authuser_name: text })} />
+                        <Item rounded style={styles.item}>
+                            <Icon style={styles.itemIcon} active name='text-width' type='FontAwesome' />
+                            <Input placeholderTextColor={CustomColor.brandPrimary} style={styles.itemInput} placeholder='Name' value={this.state.authuser_name} onChangeText={(text) => this.setState({ authuser_name: text })} />
                         </Item>
-                        <Item rounded style={[styles.item, styles.itemInput]}>
-                            <Icon active name='envelope' type='FontAwesome' />
-                            <Input placeholder='Email' value={this.state.authuser_email} onChangeText={(text) => this.setState({ authuser_email: text })} />
+                        <Item rounded style={styles.item}>
+                            <Icon style={styles.itemIcon} active name='envelope' type='FontAwesome' />
+                            <Input placeholderTextColor={CustomColor.brandPrimary} style={styles.itemInput} placeholder='Email' value={this.state.authuser_email} onChangeText={(text) => this.setState({ authuser_email: text })} />
                         </Item>
-                        <Item rounded style={[styles.item, styles.itemInput]}>
-                            <Icon active name='key' type='FontAwesome' />
-                            <Input placeholder='New Password' secureTextEntry={true} value={this.state.authuser_newpassword} onChangeText={(text) => this.setState({ authuser_newpassword: text })} />
+                        <Item rounded style={styles.item}>
+                            <Icon style={styles.itemIcon} active name='key' type='FontAwesome' />
+                            <Input placeholderTextColor={CustomColor.brandPrimary} style={styles.itemInput} placeholder='New Password' secureTextEntry={true} value={this.state.authuser_newpassword} onChangeText={(text) => this.setState({ authuser_newpassword: text })} />
                         </Item>
 
-                        <Button rounded primary block style={[styles.item, styles.loginBtn]} onPress={this._doUpdate}>
+                        <Button rounded block style={[styles.item, styles.loginBtn]} onPress={this._doUpdate}>
                             <Text>Update</Text>
                             {
                                 this.state.updateProfileLoading ?
@@ -330,7 +337,10 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     itemInput: {
-        backgroundColor: 'white'
+        color: CustomColor.brandPrimary
+    },
+    itemIcon: {
+        color: CustomColor.brandPrimary
     },
     loginBtn: {
         marginTop: 30
