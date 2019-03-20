@@ -1,35 +1,95 @@
 import React, { Component } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, ListItem, Thumbnail, Text } from 'native-base';
 import { DrawerActions } from 'react-navigation-drawer';
-
-let Data = require('./Data');
+import customColor from '../../../native-base-theme/variables/customColor';
+import Services from '../../Services';
 
 export default class Users extends Component {
 
-    usersList = Data.getUsers();
+
+    constructor(props) {
+        super(props);
+        this.state = { refreshing: false, friends: [], headerActivityIndicator: false };
+    }
+
+    componentDidMount() {
+        this.props.navigation.addListener('willFocus', payload => {
+            this._getFriends();
+        })
+    }
+
+    _onRefresh = () => {
+        this._getFriends();
+    }
+
+
+    _getFriends = async () => {
+
+        this.setState({ refreshing: true });
+
+        /** get nearby users */
+        let response = await Services.getFriends();
+
+        /** check session expires */
+        if (!response.success && response.type == 'session_expired') {
+            this.props.navigation.navigate('Logout');
+            return false;
+        }
+
+        if (!response.success) {
+            this.setState({
+                refreshing: false,
+                friends: []
+            });
+            return;
+        }
+
+        this.setState({ refreshing: false, friends: response.data.friends });
+
+    }
+
+
+
+
 
     _keyExtractor = (item, index) => `${item.id}`;
 
 
-    _gotoChatView = (item) => {
-        this.props.navigation.navigate('Chat', { userid: item.id })
-    }
+    // _gotoChatView = (item) => {
+    //     this.props.navigation.navigate('Chat', { userid: item.id })
+    // }
 
     _renderItem = ({ item }) => (
         <ListItem avatar onPress={() => this._gotoChatView(item)}>
             <Left>
-                <Thumbnail source={{ uri: item.imageUrl }} />
+                <Thumbnail style={{ width: 50, height: 50 }} source={{ uri: item.image_url }} />
             </Left>
             <Body>
-                <Text>{item.name}</Text>
-                <Text note>{item.lastMessage}</Text>
+                <Text>
+                    {item.name}
+                    {/* <Icon name="circle" type='FontAwesome' style={{ color: customColor.brandSuccess, fontSize: 10, position: 'absolute', left: 5 }} /> */}
+                </Text>
+                <Text note>Last Message</Text>
             </Body>
             <Right>
                 <Text note>3:43 pm</Text>
             </Right>
         </ListItem>
     );
+
+
+    _emptyListView = () => {
+        if (!this.state.friends.length) {
+            return (
+                <Text style={styles.emptyListView}>No Friends. Pull to refresh.</Text>
+            );
+        }
+
+        return null;
+    }
+
+
 
     render() {
 
@@ -42,13 +102,16 @@ export default class Users extends Component {
                         </Button>
                     </Left>
                     <Body>
-                        <Title>Chat Users</Title>
+                        <Title>Friends</Title>
                     </Body>
                     <Right />
                 </Header>
                 <Content>
                     <FlatList
-                        data={this.usersList}
+                        refreshing={this.state.refreshing}
+                        onRefresh={this._onRefresh}
+                        ListEmptyComponent={this._emptyListView()}
+                        data={this.state.friends}
                         keyExtractor={this._keyExtractor}
                         renderItem={this._renderItem}
                     />
@@ -58,3 +121,12 @@ export default class Users extends Component {
     }
 
 }
+
+
+const styles = StyleSheet.create({
+    emptyListView: {
+        textAlign: 'center',
+        marginTop: '50%',
+        color: customColor.brandPrimary
+    }
+});

@@ -12,15 +12,12 @@ export default class FriendRequests extends React.Component {
     constructor(props) {
         super(props);
         this.state = { refreshing: false, friend_requests: [], headerActivityIndicator: false };
-
-        this.props.navigation.addListener('willFocus', payload => {
-            this._getFriendRequests();
-        })
-
     }
 
     componentDidMount() {
-        this._getFriendRequests();
+        this.props.navigation.addListener('willFocus', payload => {
+            this._getFriendRequests();
+        })
     }
 
     _onRefresh = () => {

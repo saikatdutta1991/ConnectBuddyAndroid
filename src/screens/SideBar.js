@@ -18,7 +18,7 @@ const datas = [
         icon: "users"
     },
     {
-        name: "Chat",
+        name: "Messages",
         route: "ChatUsers",
         icon: "comments",
     },

@@ -10,4 +10,5 @@ endpoints.getFriendRequests = endpoints.base + '/api/v1/user/requests';
 endpoints.cancelFriendRequest = endpoints.base + '/api/v1/user/requests/cancel';
 endpoints.rejectFriendRequest = endpoints.base + '/api/v1/user/requests/reject';
 endpoints.acceptFriendRequest = endpoints.base + '/api/v1/user/requests/accept';
+endpoints.getFriends = endpoints.base + '/api/v1/user/friends';
 module.exports = endpoints;

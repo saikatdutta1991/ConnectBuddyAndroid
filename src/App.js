@@ -37,8 +37,8 @@ const appDrawerNavigator = createDrawerNavigator(
         ChatScreens: { screen: ChatScreens }
     },
     {
-        //initialRouteName: "HomeStack",
-        initialRouteName: "FriendRequests",
+        initialRouteName: "HomeStack",
+        //initialRouteName: "FriendRequests",
         contentOptions: {
             activeTintColor: "#e91e63"
         },
