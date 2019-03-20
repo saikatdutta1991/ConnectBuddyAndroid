@@ -7,4 +7,7 @@ endpoints.updateProfile = endpoints.base + '/api/v1/user/profile';
 endpoints.getNearbyUsers = endpoints.base + '/api/v1/user/nearby';
 endpoints.sendFriendRequest = endpoints.base + '/api/v1/user/requests/send';
 endpoints.getFriendRequests = endpoints.base + '/api/v1/user/requests';
+endpoints.cancelFriendRequest = endpoints.base + '/api/v1/user/requests/cancel';
+endpoints.rejectFriendRequest = endpoints.base + '/api/v1/user/requests/reject';
+endpoints.acceptFriendRequest = endpoints.base + '/api/v1/user/requests/accept';
 module.exports = endpoints;

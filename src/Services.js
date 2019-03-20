@@ -2,6 +2,83 @@ import Endpoints from "./Endpoints";
 import authuser from "./AuthUser";
 import Geolocation from 'react-native-geolocation-service';
 
+module.exports.acceptFriendRequest = async (userid) => {
+
+    console.log('Service::acceptFriendRequest()');
+
+    let token = authuser.getAuthToken();
+
+    return fetch(Endpoints.acceptFriendRequest, {
+        method: 'POST',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userid: userid
+        })
+    }).then(response => {
+        console.log('Service::acceptFriendRequest(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::acceptFriendRequest(): err', err);
+        return false;
+    })
+
+}
+
+module.exports.rejectFriendRequest = async (userid) => {
+
+    console.log('Service::rejectFriendRequest()');
+
+    let token = authuser.getAuthToken();
+
+    return fetch(Endpoints.rejectFriendRequest, {
+        method: 'POST',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userid: userid
+        })
+    }).then(response => {
+        console.log('Service::rejectFriendRequest(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::rejectFriendRequest(): err', err);
+        return false;
+    })
+
+}
+
+
+
+module.exports.cancelFriendRequest = async (userid) => {
+
+    console.log('Service::cancelFriendRequest()');
+
+    let token = authuser.getAuthToken();
+
+    return fetch(Endpoints.cancelFriendRequest, {
+        method: 'POST',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userid: userid
+        })
+    }).then(response => {
+        console.log('Service::cancelFriendRequest(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::cancelFriendRequest(): err', err);
+        return false;
+    })
+
+}
+
 
 
 module.exports.getFriendRequests = async () => {
