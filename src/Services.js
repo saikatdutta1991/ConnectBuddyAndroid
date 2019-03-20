@@ -3,6 +3,32 @@ import authuser from "./AuthUser";
 import Geolocation from 'react-native-geolocation-service';
 
 
+
+module.exports.getFriendRequests = async () => {
+
+    console.log('Service::getFriendRequests()');
+
+    let token = authuser.getAuthToken();
+
+    return fetch(Endpoints.getFriendRequests, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        }
+    }).then(response => {
+        console.log('Service::getFriendRequests(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::sendFriendRequest(): err', err);
+        return false;
+    })
+
+}
+
+
+
+
 module.exports.sendFriendRequest = async (userid) => {
 
     console.log('Service::sendFriendRequest()');
@@ -119,7 +145,7 @@ module.exports.updateProfile = async (name, email, newPassword) => {
  */
 module.exports.getProfile = async () => {
 
-    console.log('Service getProfile');
+    console.log('Service::getProfile()');
 
     let token = authuser.getAuthToken();
 
@@ -130,10 +156,10 @@ module.exports.getProfile = async () => {
             'Content-Type': 'application/json'
         }
     }).then(response => {
-        console.log('uploadPhoto', response);
+        console.log('Service::getProfile() -> response', response);
         return response.json();
     }).catch(err => {
-        console.log('err', err);
+        console.log('Service::getProfile() -> err', err);
         return false;
     })
 
@@ -144,30 +170,26 @@ module.exports.getProfile = async () => {
 /** 
  * upload photo service
  */
-module.exports.uploadPhoto = async (uri, type, name) => {
+module.exports.uploadPhoto = async (imagebase64) => {
 
-    console.log('Service uploadPhoto');
+    console.log('Service::uploadPhoto()');
 
     let token = authuser.getAuthToken();
-    let data = new FormData();
-    data.append('image', {
-        uri: uri,
-        type: type,
-        name: name,
-    });
 
     return fetch(Endpoints.updateProfile, {
         method: 'PATCH',
         headers: {
             'Authorization': token,
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'application/json'
         },
-        body: data
+        body: JSON.stringify({
+            image_base64: imagebase64
+        })
     }).then(response => {
-        console.log('uploadPhoto', response);
+        console.log('Service::uploadPhoto() -> response', response);
         return response.json();
     }).catch(err => {
-        console.log('err', err);
+        console.log('Service::uploadPhoto() -> err', err);
         return false;
     })
 

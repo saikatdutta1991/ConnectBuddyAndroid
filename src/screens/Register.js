@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, ActivityIndicator } from 'react-native';
-import { Container, Button, Icon, Input, Item, Text, Left, Right, Toast } from 'native-base';
+import { StyleSheet, Image } from 'react-native';
+import { Container, Button, Icon, Input, Item, Text, Left, Right, Toast, Spinner } from 'native-base';
 import logo from '../images/logo.png';
 import Services from '../Services';
 import authuser from "../AuthUser";
@@ -107,7 +107,7 @@ export default class Register extends Component {
 
                 <Button rounded block style={[styles.item, styles.loginBtn]} onPress={this._doRegister}>
                     <Text>Register</Text>
-                    {this.state.registerActivity ? <ActivityIndicator size="small" color="#00ff00" /> : null}
+                    {this.state.registerActivity ? <Spinner size="small" color='white' /> : null}
 
                 </Button>
 

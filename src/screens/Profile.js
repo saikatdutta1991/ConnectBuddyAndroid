@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Dimensions, View, Image, ActivityIndicator } from 'react-native';
-import { Container, Header, Left, Body, Right, Button, Icon, Title, Item, Content, Input, Text, Toast, ActionSheet } from 'native-base';
+import { StyleSheet, Dimensions, View, Image } from 'react-native';
+import { Container, Header, Left, Body, Right, Button, Icon, Title, Item, Content, Input, Text, Toast, ActionSheet, Spinner } from 'native-base';
 import { DrawerActions } from 'react-navigation-drawer';
 import CustomColor from '../../native-base-theme/variables/customColor';
 import authuser from "../AuthUser";
@@ -130,14 +130,12 @@ export default class Proflie extends Component {
         ImagePicker.openCamera({
             width: 200,
             height: 300,
-            cropping: true
+            cropping: true,
+            includeBase64: true,
         }).then(async image => {
 
-            console.log(image);
-
-
-            let filename = image.path.substring(image.path.lastIndexOf('/') + 1);
-            let response = await Services.uploadPhoto(image.path, image.mime, filename);
+            let imagebase64 = `data:${image.mime};base64,${image.data}`;
+            let response = await Services.uploadPhoto(imagebase64);
             this.setState({ uploadActivity: false });
 
             if (!response) {
@@ -162,10 +160,10 @@ export default class Proflie extends Component {
             /** store auth user data */
             await authuser.setImageurl(response.data.user.image_url).save();
 
-            this.setState({ authuser_imageurl: image.path })
+            this.setState({ authuser_imageurl: imagebase64 })
 
             /** set image and name to sidebar */
-            gStorage.mainMenu.setState({ authuser_image: image.path });
+            gStorage.mainMenu.setState({ authuser_image: imagebase64 });
 
 
         }).catch(err => {
@@ -188,14 +186,12 @@ export default class Proflie extends Component {
         ImagePicker.openPicker({
             width: 200,
             height: 300,
-            cropping: true
+            cropping: true,
+            includeBase64: true,
         }).then(async image => {
 
-            console.log(image);
-
-
-            let filename = image.path.substring(image.path.lastIndexOf('/') + 1);
-            let response = await Services.uploadPhoto(image.path, image.mime, filename);
+            let imagebase64 = `data:${image.mime};base64,${image.data}`;
+            let response = await Services.uploadPhoto(imagebase64);
             this.setState({ uploadActivity: false });
 
             if (!response) {
@@ -220,10 +216,10 @@ export default class Proflie extends Component {
             /** store auth user data */
             await authuser.setImageurl(response.data.user.image_url).save();
 
-            this.setState({ authuser_imageurl: image.path })
+            this.setState({ authuser_imageurl: imagebase64 })
 
             /** set image and name to sidebar */
-            gStorage.mainMenu.setState({ authuser_image: image.path });
+            gStorage.mainMenu.setState({ authuser_image: imagebase64 });
 
 
         }).catch(err => {
@@ -246,7 +242,7 @@ export default class Proflie extends Component {
                     <View style={styles.cameraIconWrapper}>
                         {
                             this.state.uploadActivity ?
-                                <ActivityIndicator size="small" color={CustomColor.brandPrimary} />
+                                <Spinner size="small" color={CustomColor.brandPrimary} />
                                 :
                                 <Icon name="camera" type='FontAwesome' onPress={this._onUpdateImagePress} />
                         }
@@ -274,7 +270,7 @@ export default class Proflie extends Component {
                     <Right>
                         {
                             this.state.profileLoading ?
-                                <ActivityIndicator size="small" color="white" />
+                                <Spinner size="small" color="white" />
                                 : null
                         }
 
@@ -304,7 +300,7 @@ export default class Proflie extends Component {
                             <Text>Update</Text>
                             {
                                 this.state.updateProfileLoading ?
-                                    <ActivityIndicator size="small" color="white" />
+                                    <Spinner size="small" color="white" />
                                     :
                                     null
                             }

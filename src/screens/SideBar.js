@@ -3,6 +3,7 @@ import { StyleSheet, Platform, FlatList } from 'react-native';
 import { Content, Text, ListItem, Icon, Container, Left, Body, Right, Thumbnail, Button } from "native-base";
 import authuser from "../AuthUser";
 import gStorage from "../GInmemStorage";
+import CustomColor from '../../native-base-theme/variables/customColor';
 
 
 const datas = [
@@ -10,6 +11,11 @@ const datas = [
         name: "Home",
         route: "Home",
         icon: "home"
+    },
+    {
+        name: "Friend Requests",
+        route: "FriendRequests",
+        icon: "users"
     },
     {
         name: "Chat",
@@ -61,7 +67,7 @@ export default class SideBar extends Component {
                 <Icon
                     active
                     name={item.icon}
-                    style={{ color: "#777", fontSize: 26, width: 30 }}
+                    style={{ color: CustomColor.brandPrimary, fontSize: 26, width: 30 }}
                     type='FontAwesome'
                 />
                 <Text style={styles.text}>
@@ -111,10 +117,11 @@ const styles = StyleSheet.create({
     text: {
         fontWeight: Platform.OS === "ios" ? "500" : "400",
         fontSize: 16,
-        marginLeft: 20
+        marginLeft: 20,
+        color: CustomColor.brandPrimary
     },
     listHeader: {
-        backgroundColor: '#ff5722',
+        backgroundColor: CustomColor.brandPrimary,
         marginLeft: 0,
         paddingLeft: 15,
         height: 130,

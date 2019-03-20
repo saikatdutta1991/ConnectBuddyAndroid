@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
-import { Container, Text, Button, H1, H3, Thumbnail, Toast } from 'native-base';
+import { StyleSheet, View } from 'react-native';
+import { Container, Text, Button, H1, H3, Thumbnail, Toast, Spinner } from 'native-base';
 import Services from '../Services';
 
 export default class AuthLoading extends React.Component {
@@ -99,14 +99,14 @@ export default class AuthLoading extends React.Component {
                 }}>
                     <View style={{ flex: 1 }}>
                         <Button rounded warning block style={{ marginRight: 5 }} onPress={this._cancel}>
-                            <Text>Cancel</Text>
+                            <Text>Go Back</Text>
                         </Button>
                     </View>
 
                     <View style={{ flex: 1 }}>
                         <Button rounded success block style={{ marginLeft: 5 }} onPress={this._sendFriendRequest}>
                             <Text>Send Request</Text>
-                            {this.state.requestSendIndicator ? <ActivityIndicator size="small" color='white' /> : null}
+                            {this.state.requestSendIndicator ? <Spinner size="small" color='white' /> : null}
                         </Button>
                     </View>
                 </View>

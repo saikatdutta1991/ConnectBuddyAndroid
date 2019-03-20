@@ -44,7 +44,7 @@ export default class Home extends Component {
 
 
     _mapReady = async () => {
-        this._fetchNearbyUsers();
+        //this._fetchNearbyUsers();
     }
 
 
