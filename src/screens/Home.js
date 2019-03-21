@@ -8,10 +8,14 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import Triangle from 'react-native-triangle';
 import gStorage from "../GInmemStorage";
 import CustomColor from '../../native-base-theme/variables/customColor';
-
+import Socket from "../Socket"
+import authuser from "../AuthUser";
 const pinMarkerImage = require('../images/map-pin2.png');
 
+
 export default class Home extends Component {
+
+    socket;
 
     constructor(props) {
         super(props);
@@ -21,6 +25,38 @@ export default class Home extends Component {
             headerActivityIndicator: '',
         };
     }
+
+
+    async componentDidMount() {
+
+        this.socket = await Socket.instance(authuser.getId());
+        this.socket.on('friend_updated_location', this._onFriendUpdatesLocation);
+    }
+
+
+    _onFriendUpdatesLocation = data => {
+
+        /** updated user is in list then only */
+        let index = this.state.nearbyusers.findIndex(user => {
+            return user._id == data.userid;
+        });
+
+        if (index > -1) {
+            this._fetchNearbyUsers();
+        }
+
+    }
+
+
+
+
+    componentWillUnmount() {
+        this.socket.off('friend_updated_location', this._onFriendUpdatesLocation);
+    }
+
+
+
+
 
 
     /**
@@ -98,6 +134,9 @@ export default class Home extends Component {
         this.props.navigation.navigate('FriendRequestSend', { user: markerUser });
 
     }
+
+
+
 
 
     _nearbyuserMarkers = () => {

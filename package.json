@@ -18,7 +18,8 @@
     "react-native-triangle": "0.0.9",
     "react-native-vector-icons": "^6.3.0",
     "react-navigation": "^3.3.2",
-    "react-navigation-drawer": "^1.2.0"
+    "react-navigation-drawer": "^1.2.0",
+    "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "7.0.0-bridge.0",

@@ -4,6 +4,7 @@ import { Container, Header, Left, Body, Right, Button, Icon, Title, Content, Lis
 import { DrawerActions } from 'react-navigation-drawer';
 import customColor from '../../../native-base-theme/variables/customColor';
 import Services from '../../Services';
+import moment from "moment";
 
 export default class Users extends Component {
 
@@ -60,23 +61,33 @@ export default class Users extends Component {
     //     this.props.navigation.navigate('Chat', { userid: item.id })
     // }
 
-    _renderItem = ({ item }) => (
-        <ListItem avatar onPress={() => this._gotoChatView(item)}>
+    _renderItem = ({ item }) => {
+
+        let lastMessage;
+        let timeAgo = '';
+        if (item.last_message) {
+            timeAgo = moment.utc(item.last_message.createdAt).fromNow();
+            lastMessage = `${item.last_message.message}`;
+        } else {
+            lastMessage = 'Say hi to your new friend';
+        }
+
+        return (<ListItem avatar onPress={() => this._gotoChatView(item)}>
             <Left>
                 <Thumbnail style={{ width: 50, height: 50 }} source={{ uri: item.image_url }} />
             </Left>
             <Body>
                 <Text>
                     {item.name}
-                    {/* <Icon name="circle" type='FontAwesome' style={{ color: customColor.brandSuccess, fontSize: 10, position: 'absolute', left: 5 }} /> */}
                 </Text>
-                <Text note>Last Message</Text>
+                <Text note>{lastMessage}</Text>
             </Body>
             <Right>
-                <Text note>3:43 pm</Text>
+                {timeAgo ? <Text note>3:43 pm</Text> : null}
+
             </Right>
-        </ListItem>
-    );
+        </ListItem>)
+    };
 
 
     _emptyListView = () => {
