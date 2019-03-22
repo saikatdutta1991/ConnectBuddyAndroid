@@ -8,8 +8,9 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import Triangle from 'react-native-triangle';
 import gStorage from "../GInmemStorage";
 import CustomColor from '../../native-base-theme/variables/customColor';
-import Socket from "../Socket"
+import Socket from "../Socket";
 import authuser from "../AuthUser";
+import BackgroundTimer from 'react-native-background-timer';
 const pinMarkerImage = require('../images/map-pin2.png');
 
 
@@ -31,7 +32,40 @@ export default class Home extends Component {
 
         this.socket = await Socket.instance(authuser.getId());
         this.socket.on('friend_updated_location', this._onFriendUpdatesLocation);
+
+        gStorage.updateLocationTimer = BackgroundTimer.setInterval(this._updateLocation, 20000);
+        this._updateLocation(); //run for first time
+
     }
+
+
+    _updateLocation = () => {
+
+        console.log('_updateLocation() called')
+
+        Services.getCurrentPosition().then(position => {
+
+            console.log('_updateLocation() : position fetched', position)
+
+            Services.updateLocation(position.coords.latitude, position.coords.longitude).then(response => {
+
+                console.log('_updateLocation() : position updated', response)
+
+                /** check session expires */
+                if (!response.success && response.type == 'session_expired') {
+                    this.props.navigation.navigate('Logout');
+                    return false;
+                }
+
+            }).catch(err => { console.log('_updateLocation() : position update failed', err) });
+
+        }).catch(err => { });
+
+    }
+
+
+
+
 
 
     _onFriendUpdatesLocation = data => {

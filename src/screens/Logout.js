@@ -1,11 +1,17 @@
 import React from 'react';
 import { StyleSheet, Image, ProgressBarAndroid, AsyncStorage } from 'react-native';
 import { Container, Text } from 'native-base';
-import { Col, Grid } from 'react-native-easy-grid';
 import logo from '../images/logo.png';
 import customColor from '../../native-base-theme/variables/customColor';
+import Socket from "../Socket";
+import authuser from "../AuthUser";;
+import BackgroundTimer from 'react-native-background-timer';
+import gStorage from "../GInmemStorage";
 
 export default class AuthLoading extends React.Component {
+
+    socket;
+
     constructor(props) {
         super(props);
         this.state = { loadingText: 'Loading ..' };
@@ -13,6 +19,15 @@ export default class AuthLoading extends React.Component {
 
 
     async componentDidMount() {
+
+        this.setState({ loadingText: 'Removing update locaiton ..' });
+        BackgroundTimer.clearInterval(gStorage.updateLocationTimer);
+
+        this.socket = await Socket.instance(authuser.getId());
+        this.setState({ loadingText: 'Disconnecting socket ..' });
+        this.socket.disconnect();
+        Socket.reset();
+
         this.setState({ loadingText: 'Logging you out ..' });
         AsyncStorage.clear();
         setTimeout(() => { this.props.navigation.navigate('Auth'); }, 1000)

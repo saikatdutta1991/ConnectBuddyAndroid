@@ -5,9 +5,13 @@ import { DrawerActions } from 'react-navigation-drawer';
 import customColor from '../../../native-base-theme/variables/customColor';
 import Services from '../../Services';
 import moment from "moment";
+import gStorage from "../../GInmemStorage";
+import Socket from "../../Socket";
+import authuser from "../../AuthUser";
 
 export default class Users extends Component {
 
+    socket;
 
     constructor(props) {
         super(props);
@@ -15,9 +19,76 @@ export default class Users extends Component {
     }
 
     componentDidMount() {
-        this.props.navigation.addListener('willFocus', payload => {
-            this._getFriends();
-        })
+
+        /** register on focus handler */
+        this.props.navigation.addListener('willFocus', this._onFocus);
+
+        this.socket = Socket.instance(authuser.getId());
+        this.socket.on('friend_online', this._onFriendOnline);
+        this.socket.on('friend_offline', this._onFriendOffline);
+        this.socket.on('new_mesaage_received', this._newMessageReceived);
+    }
+
+
+    _newMessageReceived = message => {
+
+        let index = this.state.friends.findIndex(friend => {
+            return friend._id == message.from_user;
+        });
+
+        if (index == -1) {
+            return;
+        }
+
+        let newFriendsArr = [...this.state.friends];
+        let oldFriendObject = newFriendsArr[index];
+        oldFriendObject.last_message = message;
+        newFriendsArr[index] = oldFriendObject;
+
+        this.setState({ friends: newFriendsArr });
+    }
+
+
+
+    _onFriendOnline = (friendid) => {
+
+        let index = this.state.friends.findIndex(friend => {
+            return friend._id == friendid;
+        });
+
+        if (index == -1) {
+            return;
+        }
+
+        let newFriendsArr = [...this.state.friends];
+        let oldFriendObject = newFriendsArr[index];
+        oldFriendObject.is_online = true;
+        newFriendsArr[index] = oldFriendObject;
+
+        this.setState({ friends: newFriendsArr });
+    }
+
+    _onFriendOffline = (friendid) => {
+        let index = this.state.friends.findIndex(friend => {
+            return friend._id == friendid;
+        });
+
+        if (index == -1) {
+            return;
+        }
+
+        let newFriendsArr = [...this.state.friends];
+        let oldFriendObject = newFriendsArr[index];
+        oldFriendObject.is_online = false;
+        newFriendsArr[index] = oldFriendObject;
+
+        this.setState({ friends: newFriendsArr });
+    }
+
+
+
+    _onFocus = payload => {
+        this._getFriends();
     }
 
     _onRefresh = () => {
@@ -57,9 +128,11 @@ export default class Users extends Component {
     _keyExtractor = (item, index) => `${item.id}`;
 
 
-    // _gotoChatView = (item) => {
-    //     this.props.navigation.navigate('Chat', { userid: item.id })
-    // }
+    _gotoChatView = (item) => {
+        /** storage set current chat user */
+        gStorage.currentChatUser = item;
+        this.props.navigation.navigate('Chat')
+    }
 
     _renderItem = ({ item }) => {
 
@@ -80,13 +153,13 @@ export default class Users extends Component {
                 <Text>
                     {item.name}
                 </Text>
-                <Text note>{lastMessage}</Text>
+                <Text note numberOfLines={1}>{lastMessage}</Text>
+                {timeAgo ? <Text note style={{ fontSize: 10 }}>{timeAgo}</Text> : null}
             </Body>
             <Right>
-                {timeAgo ? <Text note>3:43 pm</Text> : null}
-
+                <Icon name="circle" type='FontAwesome' style={{ color: item.is_online ? 'green' : 'grey', fontSize: 15 }} />
             </Right>
-        </ListItem>)
+        </ListItem >)
     };
 
 

@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import Endpoints from "./Endpoints";
+import Services from "./Services";
 
 class Socket {
 
@@ -10,10 +11,27 @@ class Socket {
             this._instance = io(`${Endpoints.socket}${userid}`, {
                 transports: ['websocket']
             });
+
+            this.registerGlobalEvents();
         }
 
         return this._instance;
     }
+
+
+    registerGlobalEvents() {
+
+        this._instance.on('new_mesaage_received', message => {
+            Services.playMessageReceivedSound();
+        });
+    }
+
+
+
+    reset() {
+        this._instance = null;
+    }
+
 }
 
 module.exports = new Socket();

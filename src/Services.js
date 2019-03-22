@@ -1,6 +1,86 @@
 import Endpoints from "./Endpoints";
 import authuser from "./AuthUser";
 import Geolocation from 'react-native-geolocation-service';
+import Sound from "react-native-sound";
+
+const messageReceivedSoundFile = require('./sounds/to-the-point.mp3');
+this.messageReceivedSound = new Sound(messageReceivedSoundFile, Sound.MAIN_BUNDLE, error => { });
+
+const messageSentSoundFile = require('./sounds/stairs.mp3');
+this.messageSentSound = new Sound(messageSentSoundFile, Sound.MAIN_BUNDLE, error => { });
+
+
+module.exports.playMessageSentSound = () => {
+    this.messageSentSound.setVolume(1).play();
+}
+
+module.exports.playMessageReceivedSound = () => {
+    this.messageReceivedSound.setVolume(1).play();
+}
+
+
+
+/**
+ * fetch messages
+ */
+module.exports.getMessages = async (userid) => {
+
+    console.log('Service::getMessages()');
+
+    let token = authuser.getAuthToken();
+    let getmessagesurl = Endpoints.getMessages.replace(':userid', userid);
+
+    return fetch(getmessagesurl, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        }
+    }).then(response => {
+        console.log('Service::getMessages(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::getMessages(): err', err);
+        return false;
+    })
+
+}
+
+
+
+
+/**
+ * update user location
+ */
+module.exports.updateLocation = async (latitude, longitude) => {
+
+    console.log('Service::updateLocation()');
+
+    let token = authuser.getAuthToken();
+
+    return fetch(Endpoints.updateProfile, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            latitude: latitude,
+            longitude: longitude
+        })
+    }).then(response => {
+        console.log('Service::updateLocation(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::updateLocation(): err', err);
+        return false;
+    })
+
+}
+
+
+
+
 
 
 module.exports.getFriends = async () => {

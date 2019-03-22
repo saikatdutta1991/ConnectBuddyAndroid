@@ -3,6 +3,9 @@ package com.myfirstreactnative;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.zmxv.RNSound.RNSoundPackage;
+import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
+import com.ocetnik.timer.BackgroundTimerPackage;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
@@ -28,7 +31,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSoundPackage(),
             new RNFusedLocationPackage(),
+            new BackgroundTimerPackage(),
             new MapsPackage(),
             new PickerPackage(),
             new RNGestureHandlerPackage(),

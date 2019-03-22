@@ -135,6 +135,9 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-sound')
+    implementation project(':react-native-geolocation-service')
+    implementation project(':react-native-background-timer')
     implementation (project(':react-native-geolocation-service')) {
         exclude group: 'com.google.android.gms'
     }
