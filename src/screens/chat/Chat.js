@@ -22,7 +22,6 @@ export default class Chat extends Component {
             currentChatUser: gStorage.currentChatUser,
             message: '',
             messages: [],
-            refreshing: false,
             isFriendOnlie: gStorage.currentChatUser.is_online
         };
 
@@ -55,7 +54,7 @@ export default class Chat extends Component {
 
 
     _newMessageSent = message => {
-        let messages = [...this.state.messages, message];
+        let messages = [message, ...this.state.messages];
         this.setState({ messages: messages });
         Services.playMessageSentSound();
     }
@@ -63,7 +62,7 @@ export default class Chat extends Component {
 
 
     _newMessageReceived = message => {
-        let messages = [...this.state.messages, message];
+        let messages = [message, ...this.state.messages];
         this.setState({ messages: messages });
     }
 
@@ -87,19 +86,12 @@ export default class Chat extends Component {
         this._getMessages(this.state.currentChatUser._id);
     }
 
-    _onRefresh = () => {
-        this._getMessages(this.state.currentChatUser._id);
-    }
-
 
 
     /** get messages for current user */
     _getMessages = async (userid) => {
 
-        /** get messages */
-        this.setState({ refreshing: true });
         let response = await Services.getMessages(userid);
-        this.setState({ refreshing: false });
 
         /** check session expires */
         if (!response.success && response.type == 'session_expired') {
@@ -111,63 +103,25 @@ export default class Chat extends Component {
             return this.setState({ messages: [] });
         }
 
-        this.setState({ messages: response.data });
+        this.setState({ messages: response.data.slice().reverse() });
 
     }
 
 
 
 
-
-
-    _keyExtractor = (item, index) => `${item.id}`;
-
-
-    _renderAuthUserMessage = (message) => {
-
-        let timeAgo = moment.utc(message.createdAt).fromNow();
-
-        return (
-            <View style={styles.authmessage_item}>
-                <View style={styles.authmessage_body}>
-                    <Text style={styles.authmessage_messageText}>{message.message}</Text>
-                    <Text note style={styles.authmessage_note}>{timeAgo}</Text>
-                </View>
-                <View>
-                    <Thumbnail style={styles.authmessage_thumbnail} source={{ uri: authuser.getImageurl() }} />
-                </View>
-            </View>
-        );
-    }
-
-
-    _renderOtherUserMessage = (message) => {
-
-        let timeAgo = moment.utc(message.createdAt).fromNow();
-
-        return (
-            <View avatar style={styles.othermessage_item}>
-                <View style={styles.othermessage_thumbnail_container}>
-                    <Thumbnail style={styles.othermessage_thumbnail} source={{ uri: this.state.currentChatUser.image_url }} />
-                </View>
-                <View style={styles.othermessage_body}>
-                    <Text style={styles.othermessage_messageText}>{message.message}</Text>
-                    <Text note style={styles.othermessage_note}>{timeAgo}</Text>
-                </View>
-            </View>
-        );
-
-    }
+    _keyExtractor = (item, index) => item.id;
 
 
     _renderItem = ({ item }) => {
 
-        /** auth user message item */
-        if (item.from_user == authuser.getId()) {
-            return this._renderAuthUserMessage(item);
-        } else {
-            return this._renderOtherUserMessage(item);
-        }
+        let isRightItem = item.from_user == authuser.getId() ? true : false;
+
+        return <MessageItem
+            message={item}
+            isRightItem={isRightItem}
+            currentChatUserImage={this.state.currentChatUser.image_url}
+        />
     }
 
 
@@ -225,15 +179,14 @@ export default class Chat extends Component {
                 </Header>
 
                 <FlatList
-                    refreshing={this.state.refreshing}
-                    onRefresh={this._onRefresh}
                     ListEmptyComponent={this._emptyListView()}
                     data={this.state.messages}
                     keyExtractor={this._keyExtractor}
                     renderItem={this._renderItem}
                     ref={ref => this.flatList = ref}
-                    onContentSizeChange={() => this.flatList.scrollToEnd({ animated: true })}
-
+                    inverted
+                    removeClippedSubviews={false}
+                    initialNumToRender={10}
                 />
 
 
@@ -260,6 +213,48 @@ export default class Chat extends Component {
 
             </Container >
         );
+    }
+
+}
+
+
+class MessageItem extends React.PureComponent {
+
+    render() {
+
+        let timeAgo = moment.utc(this.props.message.createdAt).fromNow();
+
+        if (this.props.isRightItem) {
+
+            return (
+                <View style={styles.authmessage_item}>
+                    <View style={styles.authmessage_body}>
+                        <Text style={styles.authmessage_messageText}>{this.props.message.message}</Text>
+                        <Text note style={styles.authmessage_note}>{timeAgo}</Text>
+                    </View>
+                    <View>
+                        <Thumbnail style={styles.authmessage_thumbnail} source={{ uri: authuser.getImageurl() }} />
+                    </View>
+                </View>
+            );
+
+        } else {
+
+
+            return (
+                <View avatar style={styles.othermessage_item}>
+                    <View style={styles.othermessage_thumbnail_container}>
+                        <Thumbnail style={styles.othermessage_thumbnail} source={{ uri: this.props.currentChatUserImage }} />
+                    </View>
+                    <View style={styles.othermessage_body}>
+                        <Text style={styles.othermessage_messageText}>{this.props.message.message}</Text>
+                        <Text note style={styles.othermessage_note}>{timeAgo}</Text>
+                    </View>
+                </View>
+            );
+
+        }
+
     }
 
 }

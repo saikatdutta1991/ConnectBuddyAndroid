@@ -8,9 +8,7 @@ class Socket {
 
     instance(userid) {
         if (!this._instance) {
-            this._instance = io(`${Endpoints.socket}${userid}`, {
-                transports: ['websocket']
-            });
+            this._instance = io(`${Endpoints.socket}${userid}`); //{transports: ['websocket']}
 
             this.registerGlobalEvents();
         }
