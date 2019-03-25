@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "464563817831",
+    "firebase_url": "https://reactnativebase-cc98f.firebaseio.com",
+    "project_id": "reactnativebase-cc98f",
+    "storage_bucket": "reactnativebase-cc98f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464563817831:android:fa27d50889bbdba0",
+        "android_client_info": {
+          "package_name": "com.myfirstreactnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464563817831-56d0ejh1nm96dqiqgghgslfm9le1762d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3VYY_GXcvfhfRw_29BbCHrFkRu6wIGU0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

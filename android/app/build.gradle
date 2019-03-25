@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services'
 
 import com.android.build.OutputFile
 
@@ -146,21 +147,26 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-device-info')
+    implementation project(':react-native-firebase')
+    implementation "com.google.firebase:firebase-core:16.0.6"
+    implementation "com.google.firebase:firebase-messaging:17.3.4"
+    implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
     implementation project(':react-native-sound')
-    implementation project(':react-native-geolocation-service')
     implementation project(':react-native-background-timer')
     implementation (project(':react-native-geolocation-service')) {
         exclude group: 'com.google.android.gms'
     }
     implementation(project(':react-native-maps')){
-       exclude group: 'com.google.android.gms'
+        exclude group: 'com.google.android.gms', module: 'play-services-base'
+        exclude group: 'com.google.android.gms', module: 'play-services-maps'
     }
 
-    implementation 'com.google.android.gms:play-services-base:12.0.1'
-    implementation 'com.google.android.gms:play-services-basement:12.0.1'
-    implementation 'com.google.android.gms:play-services-location:12.0.1'
-    implementation 'com.google.android.gms:play-services-tasks:12.0.1'
-    implementation 'com.google.android.gms:play-services-maps:12.0.1'
+    implementation 'com.google.android.gms:play-services-base:16.0.1'
+    implementation 'com.google.android.gms:play-services-basement:16.0.1'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-tasks:16.0.1'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
 
     implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-gesture-handler')
@@ -176,3 +182,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

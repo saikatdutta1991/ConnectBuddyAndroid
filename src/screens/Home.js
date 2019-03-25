@@ -12,6 +12,7 @@ import Socket from "../Socket";
 import authuser from "../AuthUser";
 import BackgroundTimer from 'react-native-background-timer';
 const pinMarkerImage = require('../images/map-pin2.png');
+import firebase, { Notification, RemoteMessage } from 'react-native-firebase';
 
 
 export default class Home extends Component {
@@ -25,10 +26,29 @@ export default class Home extends Component {
             nearbyusers: [],
             headerActivityIndicator: '',
         };
+
+
+        /** create firebase notification channel */
+        this.channel = new firebase.notifications.Android.Channel('fcm_default_channel', 'fcm_default_channel', firebase.notifications.Android.Importance.Max)
+            .setDescription('My apps test channel');
+
+        // Create the channel
+        firebase.notifications().android.createChannel(this.channel);
+
     }
 
 
     async componentDidMount() {
+
+        this.notificationListener = firebase.notifications().onNotification((notification) => {
+            // Process your notification as required
+            notification
+                .android.setChannelId('fcm_default_channel')
+                .android.setColor(CustomColor.brandPrimary);
+            firebase.notifications().displayNotification(notification)
+        });
+
+
 
         this.socket = await Socket.instance(authuser.getId());
         this.socket.on('friend_updated_location', this._onFriendUpdatesLocation);
@@ -86,6 +106,8 @@ export default class Home extends Component {
 
     componentWillUnmount() {
         this.socket.off('friend_updated_location', this._onFriendUpdatesLocation);
+        this.notificationDisplayedListener();
+        this.notificationListener();
     }
 
 

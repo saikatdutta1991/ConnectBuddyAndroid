@@ -7,6 +7,8 @@ import Geolocation from 'react-native-geolocation-service';
 import { PermissionsAndroid } from 'react-native';
 import gStorage from "../GInmemStorage";
 import customColor from '../../native-base-theme/variables/customColor';
+import DeviceInfo from 'react-native-device-info';
+import firebase from 'react-native-firebase';
 
 export default class AuthLoading extends React.Component {
 
@@ -85,6 +87,31 @@ export default class AuthLoading extends React.Component {
 
         /** store current posstion to global storage */
         gStorage.currentPosition = position;
+
+
+
+        /** check firebase messaging permission until authorized */
+        this.setState({ loadingText: 'Push messaging permission ..' });
+        let enabled = await firebase.messaging().hasPermission();
+        while (!enabled) {
+            try {
+                await firebase.messaging().requestPermission();
+                enabled = true;
+            } catch (error) {
+                enabled = false;
+            }
+        }
+
+
+
+        /** get fcm token until  */
+        let fcmToken = await firebase.messaging().getToken();
+        while (!fcmToken) {
+            fcmToken = await firebase.messaging().getToken();
+        }
+        console.log(fcmToken);
+
+
 
         /** redirect to main app */
         setTimeout(() => { this.props.navigation.navigate('App'); }, 1000)

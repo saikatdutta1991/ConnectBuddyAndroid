@@ -3,6 +3,11 @@ package com.myfirstreactnative;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
+import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
 import com.ocetnik.timer.BackgroundTimerPackage;
@@ -31,10 +36,14 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNDeviceInfo(),
+            new MapsPackage(),
+            new RNFirebasePackage(),
+            new RNFirebaseMessagingPackage(),
+            new RNFirebaseNotificationsPackage(),
             new RNSoundPackage(),
             new RNFusedLocationPackage(),
             new BackgroundTimerPackage(),
-            new MapsPackage(),
             new PickerPackage(),
             new RNGestureHandlerPackage(),
             new VectorIconsPackage()
