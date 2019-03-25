@@ -29,26 +29,25 @@ export default class Home extends Component {
 
 
         /** create firebase notification channel */
-        this.channel = new firebase.notifications.Android.Channel('fcm_default_channel', 'fcm_default_channel', firebase.notifications.Android.Importance.Max)
-            .setDescription('My apps test channel');
-
-        // Create the channel
+        this.channel = new firebase.notifications.Android.Channel('fcm_default_channel', 'fcm_default_channel', firebase.notifications.Android.Importance.High);
         firebase.notifications().android.createChannel(this.channel);
-
     }
+
+
+
+    _onNotificationHandler = (notification) => {
+        // Process your notification as required
+        notification
+            .android.setChannelId('fcm_default_channel')
+            .android.setColor(CustomColor.brandPrimary);
+
+        firebase.notifications().displayNotification(notification)
+    };
 
 
     async componentDidMount() {
 
-        this.notificationListener = firebase.notifications().onNotification((notification) => {
-            // Process your notification as required
-            notification
-                .android.setChannelId('fcm_default_channel')
-                .android.setColor(CustomColor.brandPrimary);
-            firebase.notifications().displayNotification(notification)
-        });
-
-
+        this.notificationListener = firebase.notifications().onNotification(this._onNotificationHandler);
 
         this.socket = await Socket.instance(authuser.getId());
         this.socket.on('friend_updated_location', this._onFriendUpdatesLocation);
