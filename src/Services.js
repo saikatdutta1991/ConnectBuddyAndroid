@@ -3,11 +3,8 @@ import authuser from "./AuthUser";
 import Geolocation from 'react-native-geolocation-service';
 import Sound from "react-native-sound";
 
-const messageReceivedSoundFile = require('./sounds/whistle.mp3');
-this.messageReceivedSound = new Sound(messageReceivedSoundFile, Sound.MAIN_BUNDLE, error => { });
-
-const messageSentSoundFile = require('./sounds/to-the-point.mp3');
-this.messageSentSound = new Sound(messageSentSoundFile, Sound.MAIN_BUNDLE, error => { });
+this.messageReceivedSound = new Sound('whistle.mp3', Sound.MAIN_BUNDLE, error => { });
+this.messageSentSound = new Sound('to_the_point.mp3', Sound.MAIN_BUNDLE, error => { });
 
 
 module.exports.playMessageSentSound = () => {
