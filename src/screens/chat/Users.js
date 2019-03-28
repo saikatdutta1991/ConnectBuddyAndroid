@@ -88,6 +88,7 @@ export default class Users extends Component {
 
 
     _onFocus = payload => {
+        gStorage.currentChatUser = null; //make current user null
         this._getFriends();
     }
 

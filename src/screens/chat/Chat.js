@@ -61,7 +61,12 @@ export default class Chat extends Component {
 
 
 
+    /** on new message received check from_user is current user chat */
     _newMessageReceived = message => {
+        if (this.state.currentChatUser._id != message.from_user) {
+            return;
+        }
+
         let messages = [message, ...this.state.messages];
         this.setState({ messages: messages });
     }

@@ -55,6 +55,7 @@ methods.showNotification = (type, id, time, data) => {
         .android.setColor(CustomColor.brandPrimary)
         .android.setSmallIcon('ic_launcher');
 
+    let extra, url;
 
     switch (type) {
 
@@ -63,8 +64,19 @@ methods.showNotification = (type, id, time, data) => {
         case 'friend_request_rejected':
         case 'friend_request_accepteds':
 
-            let extra = JSON.parse(data.extra);
-            let url = Endpoints.getUserImage.replace(':userid', extra.from_user_id);
+            extra = JSON.parse(data.extra);
+            url = Endpoints.getUserImage.replace(':userid', extra.from_user_id);
+            notification
+                .android.setBigText(data.body, data.title, data.subtitle)
+                .android.setLargeIcon(url);
+
+            break;
+
+
+        case 'new_mesaage_received':
+
+            extra = JSON.parse(data.extra);
+            url = Endpoints.getUserImage.replace(':userid', extra.from_user);
             notification
                 .android.setBigText(data.body, data.title, data.subtitle)
                 .android.setLargeIcon(url);

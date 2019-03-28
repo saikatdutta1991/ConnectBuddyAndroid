@@ -6,15 +6,31 @@ import customColor from '../../native-base-theme/variables/customColor';
 import Services from '../Services';
 import moment from "moment";
 import authuser from "../AuthUser";
+import Socket from "../Socket";
 
 export default class FriendRequests extends React.Component {
+
+    socket;
 
     constructor(props) {
         super(props);
         this.state = { refreshing: false, friend_requests: [], headerActivityIndicator: false };
     }
 
-    componentDidMount() {
+
+    _onFriendRequestAcceptRejectReceived = () => {
+        this._getFriendRequests();
+    }
+
+
+
+    async componentDidMount() {
+
+        this.socket = await Socket.instance(authuser.getId());
+        this.socket.on('new_friend_request', this._onFriendRequestAcceptRejectReceived);
+        this.socket.on('friend_request_accepted', this._onFriendRequestAcceptRejectReceived);
+        this.socket.on('friend_request_rejected', this._onFriendRequestAcceptRejectReceived);
+
         this.props.navigation.addListener('willFocus', payload => {
             this._getFriendRequests();
         })

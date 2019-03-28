@@ -58,6 +58,7 @@ export default class Login extends Component {
                 .setName(response.data.user.name)
                 .setEmail(response.data.user.email)
                 .setImageurl(response.data.user.image_url)
+                .setDeviceToken('')
                 .save();
 
             /** redirect to authloading */

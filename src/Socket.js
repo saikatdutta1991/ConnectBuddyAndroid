@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import Endpoints from "./Endpoints";
-import Services from "./Services";
+import gStorage from "./GInmemStorage";
+import Messaging from "./Messaging";
 
 class Socket {
 
@@ -19,9 +20,26 @@ class Socket {
 
     registerGlobalEvents() {
 
+        /** show push notification if not the from_user chat screen opened */
         this._instance.on('new_mesaage_received', message => {
-            Services.playMessageReceivedSound();
+
+            console.log('new message socket', message);
+
+            if (gStorage.currentChatUser && gStorage.currentChatUser._id == message.from_user) {
+                return;
+            }
+
+            //show push notification
+            Messaging.showNotification('new_mesaage_received', message._id, new Date(), {
+                title: message.from_user_name,
+                subtitle: 'New message',
+                body: message.message,
+                extra: JSON.stringify({ from_user: message.from_user })
+            });
+
+
         });
+
     }
 
 
