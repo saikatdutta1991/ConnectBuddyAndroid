@@ -16,6 +16,34 @@ module.exports.playMessageReceivedSound = () => {
 }
 
 
+/** add device token to server */
+module.exports.addDeviceToken = async (fcmtoken) => {
+
+    console.log('Service::addDeviceToken()');
+
+    let token = authuser.getAuthToken();
+
+    return fetch(Endpoints.addDeviceToken, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            device_type: "android",
+            device_token: fcmtoken
+        })
+    }).then(response => {
+        console.log('Service::addDeviceToken(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::addDeviceToken(): err', err);
+        return false;
+    })
+
+}
+
+
 
 /**
  * fetch messages

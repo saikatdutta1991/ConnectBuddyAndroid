@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, Keyboard } from 'react-native';
 import { Container, Button, Icon, Input, Item, Text, Left, Right, Toast, Spinner } from 'native-base';
 import logo from '../images/logo.png';
 import Services from '../Services';
@@ -29,6 +29,8 @@ export default class Register extends Component {
     }
 
     _doRegister = async () => {
+
+        Keyboard.dismiss(); // close keyboard
 
         /** call register api */
         this.setState({ registerActivity: true });

@@ -7,8 +7,8 @@ import Geolocation from 'react-native-geolocation-service';
 import { PermissionsAndroid } from 'react-native';
 import gStorage from "../GInmemStorage";
 import customColor from '../../native-base-theme/variables/customColor';
-import DeviceInfo from 'react-native-device-info';
 import firebase from 'react-native-firebase';
+import Services from "../Services";
 
 export default class AuthLoading extends React.Component {
 
@@ -103,14 +103,22 @@ export default class AuthLoading extends React.Component {
         }
 
 
+        /** get device token from storage then 
+         * if token is missing then get from firebase
+         */
+        if (!authuser.getDeviceToken()) {
 
-        /** get fcm token until  */
-        let fcmToken = await firebase.messaging().getToken();
-        while (!fcmToken) {
-            fcmToken = await firebase.messaging().getToken();
+            let fcmToken = '';
+            while (!fcmToken) {
+                fcmToken = await firebase.messaging().getToken();
+            }
+
+            /** update user device token to server */
+            this.setState({ loadingText: 'Updating push token ..' });
+            await Services.addDeviceToken(fcmToken);
+            await authuser.setDeviceToken(fcmToken).save();
+
         }
-        console.log(fcmToken);
-
 
 
         /** redirect to main app */

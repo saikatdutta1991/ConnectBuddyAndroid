@@ -11,8 +11,9 @@ import CustomColor from '../../native-base-theme/variables/customColor';
 import Socket from "../Socket";
 import authuser from "../AuthUser";
 import BackgroundTimer from 'react-native-background-timer';
+import customColor from '../../native-base-theme/variables/customColor';
+
 const pinMarkerImage = require('../images/map-pin2.png');
-import firebase, { Notification, RemoteMessage } from 'react-native-firebase';
 
 
 export default class Home extends Component {
@@ -27,27 +28,10 @@ export default class Home extends Component {
             headerActivityIndicator: '',
         };
 
-
-        /** create firebase notification channel */
-        this.channel = new firebase.notifications.Android.Channel('fcm_default_channel', 'fcm_default_channel', firebase.notifications.Android.Importance.High);
-        firebase.notifications().android.createChannel(this.channel);
     }
 
 
-
-    _onNotificationHandler = (notification) => {
-        // Process your notification as required
-        notification
-            .android.setChannelId('fcm_default_channel')
-            .android.setColor(CustomColor.brandPrimary);
-
-        firebase.notifications().displayNotification(notification)
-    };
-
-
     async componentDidMount() {
-
-        this.notificationListener = firebase.notifications().onNotification(this._onNotificationHandler);
 
         this.socket = await Socket.instance(authuser.getId());
         this.socket.on('friend_updated_location', this._onFriendUpdatesLocation);
@@ -105,8 +89,6 @@ export default class Home extends Component {
 
     componentWillUnmount() {
         this.socket.off('friend_updated_location', this._onFriendUpdatesLocation);
-        this.notificationDisplayedListener();
-        this.notificationListener();
     }
 
 
@@ -213,7 +195,7 @@ export default class Home extends Component {
                         style={{ top: -4 }}
                         width={20}
                         height={20}
-                        color={'#ff5722'}
+                        color={customColor.brandPrimary}
                         direction={'down'}
                     />
                 </View>
@@ -327,7 +309,7 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     circle: {
-        borderColor: '#ff5722',
+        borderColor: CustomColor.brandPrimary,
         borderWidth: 5,
     },
     markerFixed: {

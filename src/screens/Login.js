@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, Keyboard } from 'react-native';
 import { Container, Button, Icon, Input, Item, Text, Left, Right, Toast, Spinner } from 'native-base';
 import logo from '../images/logo.png';
 import Services from '../Services';
@@ -28,6 +28,8 @@ export default class Login extends Component {
     }
 
     _doLogin = async () => {
+
+        Keyboard.dismiss(); // close keyboard
 
         /** call login api */
         this.setState({ registerActivity: true });

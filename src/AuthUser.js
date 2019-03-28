@@ -55,6 +55,15 @@ class AuthUser {
         return !!this.getAuthToken();
     }
 
+    setDeviceToken(token) {
+        this.devicetoken = token;
+        return this;
+    }
+
+    getDeviceToken() {
+        return this.devicetoken;
+    }
+
     async save() {
 
         await AsyncStorage.setItem('authuser:id', this.id);
@@ -62,6 +71,7 @@ class AuthUser {
         await AsyncStorage.setItem('authuser:email', this.email);
         await AsyncStorage.setItem('authuser:authtoken', this.authtoken);
         await AsyncStorage.setItem('authuser:imageurl', this.imageurl);
+        await AsyncStorage.setItem('authuser:devicetoken', this.devicetoken);
 
         return true;
     }
@@ -73,6 +83,7 @@ class AuthUser {
         this.email = await AsyncStorage.getItem('authuser:email');
         this.authtoken = await AsyncStorage.getItem('authuser:authtoken');
         this.imageurl = await AsyncStorage.getItem('authuser:imageurl');
+        this.devicetoken = await AsyncStorage.getItem('authuser:devicetoken');
     }
 
 }
