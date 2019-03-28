@@ -62,7 +62,7 @@ methods.showNotification = (type, id, time, data) => {
         /** show push notification when new friend request receives */
         case 'new_friend_request':
         case 'friend_request_rejected':
-        case 'friend_request_accepteds':
+        case 'friend_request_accepted':
 
             extra = JSON.parse(data.extra);
             url = Endpoints.getUserImage.replace(':userid', extra.from_user_id);
