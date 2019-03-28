@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Platform, FlatList } from 'react-native';
-import { Content, Text, ListItem, Icon, Container, Left, Body, Right, Thumbnail, Button } from "native-base";
+import { Content, Text, ListItem, Icon, Container, Left, Body, Right, Thumbnail, Button, View } from "native-base";
 import authuser from "../AuthUser";
 import gStorage from "../GInmemStorage";
 import CustomColor from '../../native-base-theme/variables/customColor';
@@ -10,27 +10,32 @@ const datas = [
     {
         name: "Home",
         route: "Home",
-        icon: "home"
+        icon: "globe"
+    },
+    {
+        name: "Search Users",
+        route: "SearchUsers",
+        icon: "search"
     },
     {
         name: "Friend Requests",
         route: "FriendRequests",
-        icon: "users"
+        icon: "handshake-o"
     },
     {
         name: "Friends",
         route: "ChatUsers",
-        icon: "comments",
+        icon: "whatsapp",
     },
     {
         name: "Profile",
         route: "Profile",
-        icon: "user",
+        icon: "user-circle-o",
     },
     {
         name: "Logout",
         route: "Logout",
-        icon: "power-off",
+        icon: "sign-out",
     },
 
 ];
@@ -42,7 +47,8 @@ export default class SideBar extends Component {
         super(props);
         this.state = {
             authuser_image: authuser.getImageurl(),
-            authuser_name: authuser.getName()
+            authuser_name: authuser.getName(),
+            authuser_email: authuser.getEmail()
         };
     }
 
@@ -65,7 +71,6 @@ export default class SideBar extends Component {
         >
             <Left>
                 <Icon
-                    active
                     name={item.icon}
                     style={{ color: CustomColor.brandPrimary, fontSize: 26, width: 30 }}
                     type='FontAwesome'
@@ -85,21 +90,11 @@ export default class SideBar extends Component {
                     style={{ flex: 1, backgroundColor: "#fff", top: -1 }}
                 >
 
-                    <ListItem thumbnail noBorder style={styles.listHeader}>
-                        <Left>
-                            <Thumbnail source={{ uri: this.state.authuser_image }} />
-                        </Left>
-                        <Body>
-                            <Text style={styles.headerTextName}>{this.state.authuser_name}</Text>
-                            <Text note style={styles.headerTextNote}>V2.0</Text>
-                        </Body>
-                        <Right>
-                            <Button transparent>
-                                <Icon active name='cog' type='FontAwesome' style={{ color: 'white' }} />
-                            </Button>
-                        </Right>
-                    </ListItem>
-
+                    <View style={styles.listHeader}>
+                        <Thumbnail style={{ width: 100, height: 100, borderRadius: 100, borderWidth: 2, borderColor: 'white' }} source={{ uri: this.state.authuser_image }} />
+                        <Text style={styles.headerTextName}>{this.state.authuser_name}</Text>
+                        <Text style={styles.headerTextEmail}>{this.state.authuser_email}</Text>
+                    </View>
 
                     <FlatList
                         data={datas}
@@ -121,16 +116,21 @@ const styles = StyleSheet.create({
         color: CustomColor.brandPrimary
     },
     listHeader: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: CustomColor.brandPrimary,
-        marginLeft: 0,
-        paddingLeft: 15,
-        height: 130,
+        paddingTop: 20,
+        paddingBottom: 20
     },
     headerTextName: {
         color: 'white',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: 20
     },
-    headerTextNote: {
+    headerTextEmail: {
         color: 'white',
+        fontSize: 15,
+        marginTop: 5
     }
 });

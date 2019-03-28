@@ -38,7 +38,7 @@ export default class Home extends Component {
 
         gStorage.updateLocationTimer = BackgroundTimer.setInterval(this._updateLocation, 20000);
         this._updateLocation(); //run for first time
-
+        this.props.navigation.dispatch(DrawerActions.openDrawer());
     }
 
 
