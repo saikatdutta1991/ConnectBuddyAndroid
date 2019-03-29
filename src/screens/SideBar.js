@@ -33,6 +33,11 @@ const datas = [
         icon: "user-circle-o",
     },
     {
+        name: "About Us",
+        route: "Aboutus",
+        icon: "info",
+    },
+    {
         name: "Logout",
         route: "Logout",
         icon: "sign-out",

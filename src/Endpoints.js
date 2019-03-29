@@ -1,6 +1,7 @@
 const endpoints = {};
 endpoints.socket = 'https://connectbuddy.herokuapp.com?type=user&id=';
 endpoints.base = 'https://connectbuddy.herokuapp.com';
+endpoints.aboutus = endpoints.base + '/about-us';
 endpoints.register = endpoints.base + '/api/v1/user/register';
 endpoints.login = endpoints.base + '/api/v1/user/login';
 endpoints.getProfile = endpoints.base + '/api/v1/user/profile';

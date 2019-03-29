@@ -13,6 +13,7 @@ import ProfileScreen from "./screens/Profile";
 import FriendRequestSendScreen from "./screens/FriendRequestSend";
 import FriendRequestsScreen from "./screens/FriendRequests";
 import SearchUsersScreen from "./screens/SearchUsers";
+import AboutusUsScreen from "./screens/Aboutus";
 
 
 const homeStack = createStackNavigator(
@@ -37,10 +38,11 @@ const appDrawerNavigator = createDrawerNavigator(
         Logout: { screen: LogoutScreen },
         ChatScreens: { screen: ChatScreens },
         SearchUsers: { screen: SearchUsersScreen },
+        Aboutus: { screen: AboutusUsScreen },
     },
     {
         initialRouteName: "HomeStack",
-        //initialRouteName: "SearchUsers",
+        //initialRouteName: "Aboutus",
         contentOptions: {
             activeTintColor: "#e91e63"
         },
