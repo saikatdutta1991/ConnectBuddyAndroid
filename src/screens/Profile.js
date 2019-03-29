@@ -289,7 +289,7 @@ export default class Proflie extends Component {
                         </Item>
                         <Item rounded style={styles.item}>
                             <Icon style={styles.itemIcon} active name='envelope' type='FontAwesome' />
-                            <Input placeholderTextColor={CustomColor.brandPrimary} style={styles.itemInput} placeholder='Email' value={this.state.authuser_email} onChangeText={(text) => this.setState({ authuser_email: text })} />
+                            <Input autoComplete="off" autoCapitalize='none' placeholderTextColor={CustomColor.brandPrimary} style={styles.itemInput} placeholder='Email' value={this.state.authuser_email} onChangeText={(text) => this.setState({ authuser_email: text })} />
                         </Item>
                         <Item rounded style={styles.item}>
                             <Icon style={styles.itemIcon} active name='key' type='FontAwesome' />

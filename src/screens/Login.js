@@ -81,7 +81,7 @@ export default class Login extends Component {
 
                 <Item rounded style={styles.item}>
                     <Icon style={styles.itemIcon} active name='envelope' type='FontAwesome' />
-                    <Input placeholderTextColor={customColor.brandPrimary} style={styles.itemInput} placeholder='Email' value={this.state.email} onChangeText={(text) => this.setState({ email: text })} />
+                    <Input autoComplete="off" autoCapitalize='none' placeholderTextColor={customColor.brandPrimary} style={styles.itemInput} placeholder='Email' value={this.state.email} onChangeText={(text) => this.setState({ email: text })} />
                 </Item>
                 <Item rounded style={styles.item}>
                     <Icon style={styles.itemIcon} active name='key' type='FontAwesome' />
