@@ -16,4 +16,5 @@ endpoints.getFriends = endpoints.base + '/api/v1/user/friends';
 endpoints.getMessages = endpoints.base + '/api/v1/user/friends/:userid/messages'; //replace with :userid
 endpoints.addDeviceToken = endpoints.base + '/api/v1/user/fcm/token';
 endpoints.getUserImage = endpoints.base + '/api/v1/user/:userid/image';
+endpoints.searchUsers = endpoints.base + '/api/v1/user/search?q=';
 module.exports = endpoints;

@@ -16,23 +16,10 @@ import SearchUsersScreen from "./screens/SearchUsers";
 import AboutusUsScreen from "./screens/Aboutus";
 
 
-const homeStack = createStackNavigator(
-    {
-        Home: { screen: Home },
-        FriendRequestSend: { screen: FriendRequestSendScreen }
-    },
-    {
-        initialRouteName: "Home",
-        headerMode: 'none',
-        navigationOptions: {
-            headerVisible: false,
-        }
-    }
-);
-
 const appDrawerNavigator = createDrawerNavigator(
     {
-        HomeStack: homeStack,
+        Home: { screen: Home },
+        FriendRequestSend: { screen: FriendRequestSendScreen },
         FriendRequests: { screen: FriendRequestsScreen },
         Profile: { screen: ProfileScreen },
         Logout: { screen: LogoutScreen },
@@ -41,8 +28,7 @@ const appDrawerNavigator = createDrawerNavigator(
         Aboutus: { screen: AboutusUsScreen },
     },
     {
-        initialRouteName: "HomeStack",
-        //initialRouteName: "Aboutus",
+        initialRouteName: "Home",
         contentOptions: {
             activeTintColor: "#e91e63"
         },

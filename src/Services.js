@@ -16,6 +16,35 @@ module.exports.playMessageReceivedSound = () => {
 }
 
 
+/** search users */
+/**
+ * fetch messages
+ */
+module.exports.searchUsers = async (keywords) => {
+
+    console.log('Service::searchUsers()');
+
+    let token = authuser.getAuthToken();
+
+    return fetch(Endpoints.searchUsers + keywords, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+            "Content-Type": "application/json"
+        }
+    }).then(response => {
+        console.log('Service::searchUsers(): response', response);
+        return response.json();
+    }).catch(err => {
+        console.log('Service::searchUsers(): err', err);
+        return false;
+    })
+
+}
+
+
+
+
 /** add device token to server */
 module.exports.addDeviceToken = async (fcmtoken) => {
 

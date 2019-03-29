@@ -167,6 +167,7 @@ export default class Home extends Component {
             return user.location.coordinates[1] === coordinate.latitude && user.location.coordinates[0] === coordinate.longitude;
         });
 
+        gStorage.previousRouteName = 'Home';
         this.props.navigation.navigate('FriendRequestSend', { user: markerUser });
 
     }

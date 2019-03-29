@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, BackHandler } from 'react-native';
 import { Container, Text, Button, H1, H3, Thumbnail, Toast, Spinner } from 'native-base';
 import Services from '../Services';
+import gStorage from "../GInmemStorage";
 
 export default class AuthLoading extends React.Component {
 
@@ -18,6 +19,21 @@ export default class AuthLoading extends React.Component {
     }
 
 
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    handleBackPress = () => {
+        this._cancel();
+        return true;
+    }
+
+
+
     _getUserFromParam() {
         this.setState({
             user: this.props.navigation.getParam('user', 'null')
@@ -26,7 +42,8 @@ export default class AuthLoading extends React.Component {
 
 
     _cancel = () => {
-        this.props.navigation.navigate('Home');
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+        this.props.navigation.navigate(gStorage.previousRouteName);
     }
 
     /**
