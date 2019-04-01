@@ -1,6 +1,7 @@
 import firebase from 'react-native-firebase';
 import CustomColor from "../native-base-theme/variables/customColor";
 import Endpoints from "./Endpoints";
+import { NativeModules } from "react-native";
 
 /** store current module instance */
 var methods = {};

@@ -1,7 +1,7 @@
 package com.myfirstreactnative;
 
 import android.app.Application;
-
+import com.myfirstreactnative.AppStarterPackage;
 import com.facebook.react.ReactApplication;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
@@ -48,7 +48,8 @@ public class MainApplication extends Application implements ReactApplication {
             new BackgroundTimerPackage(),
             new PickerPackage(),
             new RNGestureHandlerPackage(),
-            new VectorIconsPackage()
+            new VectorIconsPackage(),
+            new AppStarterPackage()
       );
     }
 
