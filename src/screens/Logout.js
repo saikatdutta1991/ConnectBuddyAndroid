@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image, ProgressBarAndroid, AsyncStorage } from 'react-native';
 import { Container, Text } from 'native-base';
-import logo from '../images/logo.png';
+import logo from '../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png';
 import customColor from '../../native-base-theme/variables/customColor';
 import Socket from "../Socket";
 import authuser from "../AuthUser";;

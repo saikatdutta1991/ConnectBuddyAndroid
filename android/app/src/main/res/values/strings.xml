@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyFirstReactNative</string>
+    <string name="app_name">CBuddy</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <color name="colorAccent">#ff5722</color>
 </resources>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image, ProgressBarAndroid } from 'react-native';
 import { Container, Text } from 'native-base';
-import logo from '../images/logo.png';
+import logo from '../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png';
 import authuser from "../AuthUser";
 import Geolocation from 'react-native-geolocation-service';
 import { PermissionsAndroid } from 'react-native';
