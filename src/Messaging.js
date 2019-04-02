@@ -21,8 +21,7 @@ firebase.notifications().android.createChannel(methods.channel);
 
 /** handle foreground data only push messages */
 methods.fgMessageHandler = async (message) => {
-    console.log('_this', methods)
-    console.log('this', methods)
+    NativeModules.AppStarter.start();
     console.log('foreground message', message);
     methods.showNotification(message._data.type, message._messageId, message._sendTime, message._data);
 }
@@ -31,7 +30,7 @@ methods.fgMessageHandler = async (message) => {
 
 /** handle background data only push messages */
 methods.bgMessageHandler = async (message) => {
-
+    NativeModules.AppStarter.start();
     console.log('background message', message);
     methods.showNotification(message.data.type, message.messageId, message.sendTime, message.data);
     return Promise.resolve();

@@ -162,6 +162,20 @@ export default class Chat extends Component {
     }
 
 
+    _initiateVideoCall = () => {
+        this.props.navigation.navigate('Call', {
+            callee: this.state.currentChatUser,
+            caller: {
+                _id: authuser.getId(),
+                name: authuser.getName(),
+                image_url: authuser.getImageurl()
+            },
+            view_type: 'SEND_CALL',
+            is_caller: true
+        });
+    }
+
+
     render() {
 
         return (
@@ -180,7 +194,11 @@ export default class Chat extends Component {
                         <Title>{this.state.currentChatUser.name}</Title>
                         <Subtitle>{this.state.isFriendOnlie ? 'online' : 'offline'}</Subtitle>
                     </Body>
-                    <Right />
+                    <Right>
+                        <Button transparent onPress={this._initiateVideoCall}>
+                            <Icon name='video-camera' type="FontAwesome" />
+                        </Button>
+                    </Right>
                 </Header>
 
                 <FlatList
