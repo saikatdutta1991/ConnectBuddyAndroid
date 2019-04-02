@@ -275,13 +275,13 @@ const styles = StyleSheet.create({
     othermessage_thumbnail_container: {},
     othermessage_thumbnail: { width: 30, height: 30, top: 0 },
     othermessage_body: { marginLeft: 5, marginRight: 50 },
-    othermessage_messageText: { color: 'white', backgroundColor: '#ffc107', padding: 5, borderRadius: 5 },
+    othermessage_messageText: { color: 'black', backgroundColor: '#ececec', padding: 5, borderRadius: 5 },
     othermessage_note: {},
 
     authmessage_item: { marginTop: 15, flex: 1, flexDirection: 'row', marginLeft: 15, marginRight: 15, justifyContent: 'flex-end' },
     authmessage_thumbnail_container: {},
     authmessage_thumbnail: { width: 30, height: 30 },
     authmessage_body: { marginLeft: 50, marginRight: 5 },
-    authmessage_messageText: { color: 'white', backgroundColor: '#ff5722', padding: 5, borderRadius: 5 },
+    authmessage_messageText: { color: 'white', backgroundColor: '#0067ff', padding: 5, borderRadius: 5 },
     authmessage_note: {}
 });
