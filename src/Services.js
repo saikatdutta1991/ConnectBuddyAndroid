@@ -2,6 +2,7 @@ import Endpoints from "./Endpoints";
 import authuser from "./AuthUser";
 import Geolocation from 'react-native-geolocation-service';
 import Sound from "react-native-sound";
+import logo from './images/logo_hi_res.png';
 
 this.messageReceivedSound = new Sound('whistle.mp3', Sound.MAIN_BUNDLE, error => { });
 this.messageSentSound = new Sound('to_the_point.mp3', Sound.MAIN_BUNDLE, error => { });
@@ -14,6 +15,16 @@ module.exports.playMessageSentSound = () => {
 module.exports.playMessageReceivedSound = () => {
     this.messageReceivedSound.setVolume(1).play();
 }
+
+
+/**
+ * get logo
+ */
+module.exports.getLogo = () => {
+    return logo;
+}
+
+
 
 
 /** search users */

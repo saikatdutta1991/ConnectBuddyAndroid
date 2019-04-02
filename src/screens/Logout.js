@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Image, ProgressBarAndroid, AsyncStorage } from 'react-native';
 import { Container, Text } from 'native-base';
-import logo from '../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png';
+import Services from "../Services";
 import customColor from '../../native-base-theme/variables/customColor';
 import Socket from "../Socket";
 import authuser from "../AuthUser";;
@@ -39,8 +39,8 @@ export default class AuthLoading extends React.Component {
         return (
             <Container style={styles.container}>
 
-                <Image source={logo}
-                    style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 50 }}
+                <Image source={Services.getLogo()}
+                    style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 50, borderRadius: 100 }}
                 />
 
                 <ProgressBarAndroid styleAttr="Horizontal" color={customColor.brandPrimary}

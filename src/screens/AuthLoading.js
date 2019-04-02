@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Image, ProgressBarAndroid } from 'react-native';
 import { Container, Text } from 'native-base';
-import logo from '../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png';
 import authuser from "../AuthUser";
 import Geolocation from 'react-native-geolocation-service';
 import { PermissionsAndroid } from 'react-native';
@@ -131,8 +130,8 @@ export default class AuthLoading extends React.Component {
     render() {
         return (
             <Container style={styles.container}>
-                <Image source={logo}
-                    style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 50 }}
+                <Image source={Services.getLogo()}
+                    style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 50, borderRadius: 100 }}
                 />
 
                 <ProgressBarAndroid styleAttr="Horizontal" color={customColor.brandPrimary}

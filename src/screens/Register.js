@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image, Keyboard } from 'react-native';
 import { Container, Button, Icon, Input, Item, Text, Left, Right, Toast, Spinner } from 'native-base';
-import logo from '../../android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png';
 import Services from '../Services';
 import authuser from "../AuthUser";
 import customColor from '../../native-base-theme/variables/customColor';
@@ -77,8 +76,8 @@ export default class Register extends Component {
         return (
             <Container style={styles.container}>
 
-                <Image source={logo}
-                    style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 50 }}
+                <Image source={Services.getLogo()}
+                    style={{ width: '100%', height: 100, resizeMode: "contain", marginBottom: 50, borderRadius: 100 }}
                 />
 
                 <Item rounded style={styles.item}>
