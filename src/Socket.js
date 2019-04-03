@@ -2,6 +2,8 @@ import io from 'socket.io-client';
 import Endpoints from "./Endpoints";
 import gStorage from "./GInmemStorage";
 import Messaging from "./Messaging";
+import NavigationService from './NavigationService';
+import authuser from "./AuthUser";
 
 class Socket {
 
@@ -19,6 +21,30 @@ class Socket {
 
 
     registerGlobalEvents() {
+
+        /** register incoming call */
+        this._instance.on('incoming_call', data => {
+
+            NavigationService.navigate('Call', {
+                caller: {
+                    _id: data.callerId,
+                    name: data.callerName,
+                    image_url: data.callerImageurl
+                },
+                callee: {
+                    _id: authuser.getId(),
+                    name: authuser.getName(),
+                    image_url: authuser.getImageurl()
+                },
+                view_type: 'RECEIVE_CALL',
+                is_caller: false
+            });
+
+
+        });
+
+
+
 
         /** show push notification if not the from_user chat screen opened */
         this._instance.on('new_mesaage_received', message => {

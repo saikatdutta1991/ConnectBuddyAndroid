@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Root } from "native-base";
 import { createAppContainer, createSwitchNavigator, createStackNavigator } from "react-navigation";
+import NavigationService from './NavigationService';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import AuthLoadingScreen from "./screens/AuthLoading";
 import Login from "./screens/Login";
@@ -68,7 +69,11 @@ const AppContainer = createAppContainer(switchNavigator);
 export default () => {
     return (
         <Root>
-            <AppContainer />
+            <AppContainer
+                ref={navigatorRef => {
+                    NavigationService.setTopLevelNavigator(navigatorRef);
+                }}
+            />
         </Root>
     );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, ActivityIndicator, View, BackHandler } from 'react-native';
 import { Container, Text, Thumbnail, Icon, Button, Left, Right } from 'native-base';
 import customColor from '../../../../native-base-theme/variables/customColor';
 import authuser from "../../../AuthUser";
@@ -9,8 +9,6 @@ import {
     RTCIceCandidate,
     RTCSessionDescription,
     RTCView,
-    MediaStream,
-    MediaStreamTrack,
     mediaDevices
 } from 'react-native-webrtc';
 
@@ -27,54 +25,176 @@ export default class SendCall extends React.Component {
     timeTick = 0;
     peerConnection;
     localStream;
+    remoteStream;
+    iceCandidates = [];
 
     constructor(props) {
         super(props);
-        this.state = {
-            view_type: '',
-            callee: {},
-            caller: {},
-            call_status_text: '',
-            is_caller: true,
-        };
+        this.state = {};
     }
 
-    async componentDidMount() {
-        this.props.navigation.addListener('willFocus', this._onFocus);
+
+    _onBlur = () => {
+
+        if (this.peerConnection) {
+            this.peerConnection.close();
+            this.peerConnection = null;
+        }
+
+    }
+
+
+    componentDidMount() {
+
+        this.onFocusSubscription = this.props.navigation.addListener('willFocus', this._onFocus);
+        this.onBlurSubscription = this.props.navigation.addListener('willBlur', this._onBlur);
         this.socket = Socket.instance(authuser.getId());
         this.socket.on('is_connected_vc', this._isConnectedHandler);
         this.socket.on('vc_rejected', this._handleRejectCall);
         this.socket.on('vc_accepted', this._handleAccptedCall);
+        this.socket.on('video-offer', this._handleVideoOffer);
+        this.socket.on('video-answer', this._handleVideoAnswer);
+        this.socket.on('new-ice-candidate', this._handleNewICECandidate);
+
+        //BackHandler.addEventListener('hardwareBackPress', this._handleBackPress);
     }
 
 
+    componentWillUnmount() {
+
+        this.onFocusSubscription.remove();
+        this.onBlurSubscription.remove();
+        this.socket.off('is_connected_vc', this._isConnectedHandler);
+        this.socket.off('vc_rejected', this._handleRejectCall);
+        this.socket.off('vc_accepted', this._handleAccptedCall);
+        this.socket.off('video-offer', this._handleVideoOffer);
+        this.socket.off('video-answer', this._handleVideoAnswer);
+        this.socket.off('new-ice-candidate', this._handleNewICECandidate);
+
+        //BackHandler.removeEventListener('hardwareBackPress', this._handleBackPress);
+    }
+
+
+    _handleBackPress = () => {
+
+    }
+
+
+    _handleAddStreamEvent = async (event) => {
+        console.log('_handleAddStreamEvent')
+        this.remoteStream = event.stream;
+        await this.setState({ remoteStreamURL: this.remoteStream.toURL() })
+    }
+
+
+
+
+    _handleICECandidateEvent = (event) => {
+
+        if (event.candidate) {
+            console.log('ice candidate collecting')
+            this.iceCandidates.push(event.candidate);
+        } else {
+            console.log('ice candidate collected')
+            if (this.iceCandidates.length) {
+
+                if (this.state.is_caller) {
+
+                    this.socket.emit('vc_exchange', {
+                        usertype: 'user',
+                        userid: this.state.callee._id,
+                        mtype: 'video-offer',
+                        candidates: this.iceCandidates,
+                        sdp: this.peerConnection.localDescription
+                    });
+
+                } else {
+
+                    this.socket.emit('vc_exchange', {
+                        usertype: 'user',
+                        userid: this.state.caller._id,
+                        mtype: 'video-answer',
+                        candidates: this.iceCandidates,
+                        sdp: this.peerConnection.localDescription
+                    });
+
+                }
+
+            }
+
+        }
+
+
+    }
+
+
+    _handleVideoAnswer = (data) => {
+
+        let desc = new RTCSessionDescription(data.sdp);
+        this.peerConnection.setRemoteDescription(desc);
+
+        data.candidates.forEach(candidate => {
+
+            this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+                .catch((err) => {
+                    console.log('_handleNewICECandidate', err)
+                })
+
+        });
+
+    }
+
+
+
+    _handleVideoOffer = async (data) => {
+
+        this.peerConnection = createPeerConnection({
+            handleICECandidateEvent: this._handleICECandidateEvent,
+            handleAddStreamEvent: this._handleAddStreamEvent
+        });
+
+        let desc = new RTCSessionDescription(data.sdp);
+
+        await this.peerConnection.setRemoteDescription(desc);
+        this.peerConnection.addStream(this.localStream);
+
+        let answer = await this.peerConnection.createAnswer();
+        await this.peerConnection.setLocalDescription(answer);
+
+        data.candidates.forEach(candidate => {
+
+            this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+                .catch((err) => {
+                    console.log('_handleNewICECandidate', err)
+                })
+
+        });
+
+    }
+
+
+
+
     _handleAccptedCall = async () => {
+
         this.setState({ call_status_text: 'Call accepted' });
         clearInterval(this.sendRequestTimer);
 
         this.peerConnection = createPeerConnection({
-            handleNegotiationNeededEvent: this._handleNegotiationNeededEvent
+            handleICECandidateEvent: this._handleICECandidateEvent,
+            handleAddStreamEvent: this._handleAddStreamEvent
         });
 
-        this.localStream = await getUserMedia(true, 60, true);
+        this.localStream = await getUserMedia(true, 30, true);
         this.setState({ localStreamURL: this.localStream.toURL(), view_type: ONGOIN_CALL });
         this.peerConnection.addStream(this.localStream);
 
-    }
-
-
-    _handleNegotiationNeededEvent = async () => {
 
         let offer = await this.peerConnection.createOffer();
-        this.peerConnection.setLocalDescription(offer);
-        this.socket.emit('vc_exchange', {
-            usertype: 'user',
-            userid: this.state.callee._id,
-            type: 'video-offer',
-            sdp: this.peerConnection.localDescription
-        });
+        await this.peerConnection.setLocalDescription(offer);
 
     }
+
 
 
     _handleRejectCall = () => {
@@ -140,8 +260,7 @@ export default class SendCall extends React.Component {
         });
 
         if (this.state.view_type == SEND_CALL) {
-            //this._connectCallee();
-            this._handleAccptedCall();
+            this._connectCallee();
         }
 
     }
@@ -150,6 +269,19 @@ export default class SendCall extends React.Component {
     _connectCallee = () => {
         this.setState({ call_status_text: 'Connecting..' });
         this.socket.emit('connect_for_vc', { calleeType: 'user', calleeId: this.state.callee._id });
+    }
+
+
+    _handleAcceptCallButtonPress = async () => {
+        this.socket.emit('accept_vc', { callerType: 'user', callerId: this.state.caller._id })
+        this.setState({ view_type: ONGOIN_CALL });
+        this.localStream = await getUserMedia(true, 30, true);
+        this.setState({ localStreamURL: this.localStream.toURL(), view_type: ONGOIN_CALL });
+    }
+
+    _handleRejectCallButtonPress = () => {
+        this.socket.emit('reject_vc', { callerType: 'user', callerId: this.state.caller._id });
+        this.props.navigation.navigate('ChatUsers');
     }
 
 
@@ -203,6 +335,7 @@ export default class SendCall extends React.Component {
                             name='phone'
                             style={{ fontSize: 50, color: 'white', backgroundColor: 'red', padding: 10, paddingRight: 15, paddingLeft: 15, borderRadius: 100 }}
                             type='FontAwesome'
+                            onPress={this._handleRejectCallButtonPress}
                         />
                     </Left>
                     <Right style={{ paddingRight: 30 }}>
@@ -210,6 +343,7 @@ export default class SendCall extends React.Component {
                             name='phone'
                             style={{ fontSize: 50, color: 'white', backgroundColor: 'green', padding: 10, paddingRight: 15, paddingLeft: 15, borderRadius: 100 }}
                             type='FontAwesome'
+                            onPress={this._handleAcceptCallButtonPress}
                         />
                     </Right>
                 </View>
@@ -277,7 +411,7 @@ const styles = StyleSheet.create({
 
 
 
-
+const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 var createPeerConnection = ({
     handleNegotiationNeededEvent,
     handleICECandidateEvent,
@@ -289,7 +423,6 @@ var createPeerConnection = ({
     handleAddStreamEvent
 }) => {
 
-    const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
     myPeerConnection = new RTCPeerConnection(configuration);
     myPeerConnection.onicecandidate = handleICECandidateEvent;
     myPeerConnection.onaddstream = handleAddStreamEvent;
