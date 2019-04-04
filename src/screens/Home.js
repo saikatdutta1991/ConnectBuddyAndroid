@@ -8,8 +8,6 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import Triangle from 'react-native-triangle';
 import gStorage from "../GInmemStorage";
 import CustomColor from '../../native-base-theme/variables/customColor';
-import Socket from "../Socket";
-import authuser from "../AuthUser";
 import BackgroundTimer from 'react-native-background-timer';
 import customColor from '../../native-base-theme/variables/customColor';
 
@@ -32,9 +30,6 @@ export default class Home extends Component {
 
 
     async componentDidMount() {
-
-        this.socket = await Socket.instance(authuser.getId());
-        this.socket.on('friend_updated_location', this._onFriendUpdatesLocation);
 
         gStorage.updateLocationTimer = BackgroundTimer.setInterval(this._updateLocation, 20000);
         this._updateLocation(); //run for first time
@@ -64,33 +59,6 @@ export default class Home extends Component {
         }).catch(err => { });
 
     }
-
-
-
-
-
-
-    _onFriendUpdatesLocation = data => {
-
-        /** updated user is in list then only */
-        let index = this.state.nearbyusers.findIndex(user => {
-            return user._id == data.userid;
-        });
-
-        if (index > -1) {
-            this._fetchNearbyUsers();
-        }
-
-    }
-
-
-
-
-    componentWillUnmount() {
-        this.socket.off('friend_updated_location', this._onFriendUpdatesLocation);
-    }
-
-
 
 
 

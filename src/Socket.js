@@ -4,6 +4,12 @@ import gStorage from "./GInmemStorage";
 import Messaging from "./Messaging";
 import NavigationService from './NavigationService';
 import authuser from "./AuthUser";
+import { YellowBox } from 'react-native';
+
+console.ignoredYellowBox = ['Remote debugger'];
+YellowBox.ignoreWarnings([
+    'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
 
 class Socket {
 
@@ -11,7 +17,7 @@ class Socket {
 
     instance(userid) {
         if (!this._instance) {
-            this._instance = io(`${Endpoints.socket}${userid}`); //{transports: ['websocket']}
+            this._instance = io(`${Endpoints.socket}${userid}`, { transports: ['websocket'] });
 
             this.registerGlobalEvents();
         }

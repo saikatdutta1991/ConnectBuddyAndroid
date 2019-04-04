@@ -8,6 +8,7 @@ import gStorage from "../GInmemStorage";
 import customColor from '../../native-base-theme/variables/customColor';
 import firebase from 'react-native-firebase';
 import Services from "../Services";
+import Socket from "../Socket";
 
 export default class AuthLoading extends React.Component {
 
@@ -63,6 +64,10 @@ export default class AuthLoading extends React.Component {
             setTimeout(() => { this.props.navigation.navigate('Auth'); }, 1000)
             return;
         }
+
+
+        this.socket = await Socket.instance(authuser.getId());
+
 
         /** make status for geolocation permisstion */
         this.setState({ loadingText: 'GeoLocation Permission ..' });
