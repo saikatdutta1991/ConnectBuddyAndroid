@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { StyleSheet, Platform, FlatList } from 'react-native';
-import { Content, Text, ListItem, Icon, Container, Left, Body, Right, Thumbnail, Button, View } from "native-base";
+import { Content, Text, ListItem, Icon, Container, Left, Thumbnail, View } from "native-base";
 import authuser from "../AuthUser";
 import gStorage from "../GInmemStorage";
 import CustomColor from '../../native-base-theme/variables/customColor';
-
+import MatIcon from "react-native-vector-icons/MaterialIcons";
 
 const datas = [
     {
-        name: "Home",
+        name: "Users Map",
         route: "Home",
-        icon: "globe"
+        icon: "place"
     },
     {
         name: "Search Users",
@@ -20,27 +20,27 @@ const datas = [
     {
         name: "Friend Requests",
         route: "FriendRequests",
-        icon: "handshake-o"
+        icon: "people-outline"
     },
     {
-        name: "Friends",
+        name: "Messages",
         route: "ChatUsers",
-        icon: "whatsapp",
+        icon: "chat",
     },
     {
-        name: "Profile",
+        name: "My Profile",
         route: "Profile",
-        icon: "user-circle-o",
+        icon: "account-circle",
     },
     {
-        name: "About Us",
+        name: "App Info",
         route: "Aboutus",
-        icon: "info",
+        icon: "info-outline",
     },
     {
-        name: "Logout",
+        name: "Sing Out",
         route: "Logout",
-        icon: "sign-out",
+        icon: "power",
     },
 
 ];
@@ -75,11 +75,7 @@ export default class SideBar extends Component {
             onPress={() => this.props.navigation.navigate(item.route)}
         >
             <Left>
-                <Icon
-                    name={item.icon}
-                    style={{ color: CustomColor.brandPrimary, fontSize: 26, width: 30 }}
-                    type='FontAwesome'
-                />
+                <MatIcon name={item.icon} color={CustomColor.brandPrimary} size={27} />
                 <Text style={styles.text}>
                     {item.name}
                 </Text>

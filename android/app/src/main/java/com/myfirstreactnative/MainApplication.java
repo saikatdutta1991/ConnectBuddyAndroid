@@ -3,6 +3,7 @@ package com.myfirstreactnative;
 import android.app.Application;
 import com.myfirstreactnative.AppStarterPackage;
 import com.facebook.react.ReactApplication;
+import com.zxcpoiu.incallmanager.InCallManagerPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.agontuk.RNFusedLocation.RNFusedLocationPackage;
@@ -38,6 +39,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new InCallManagerPackage(),
             new RNCWebViewPackage(),
             new RNDeviceInfo(),
             new MapsPackage(),

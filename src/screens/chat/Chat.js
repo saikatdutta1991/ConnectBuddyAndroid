@@ -7,6 +7,7 @@ import customColor from '../../../native-base-theme/variables/customColor';
 import Services from '../../Services';
 import Socket from "../../Socket";
 import moment from "moment";
+import MatIcon from "react-native-vector-icons/MaterialIcons";
 
 
 export default class Chat extends Component {
@@ -179,7 +180,7 @@ export default class Chat extends Component {
     render() {
 
         return (
-            <Container>
+            <Container style={{ backgroundColor: '#ece3dc' }}>
 
                 <Header>
                     <Left>
@@ -196,7 +197,7 @@ export default class Chat extends Component {
                     </Body>
                     <Right>
                         <Button transparent onPress={this._initiateVideoCall}>
-                            <Icon name='video-camera' type="FontAwesome" />
+                            <MatIcon name="videocam" color="white" size={27} />
                         </Button>
                     </Right>
                 </Header>
@@ -210,24 +211,20 @@ export default class Chat extends Component {
                     inverted
                     removeClippedSubviews={false}
                     initialNumToRender={10}
+                    style={{ backgroundColor: 'transparent', marginBottom: 10 }}
                 />
 
 
 
-                <Footer style={{ backgroundColor: 'transparent', marginBottom: 5, marginLeft: 5, marginRight: 5 }}>
+                <Footer style={{ backgroundColor: '#ece3dc', paddingBottom: 5, paddingLeft: 5, paddingRight: 5, elevation: 0 }}>
                     <Body>
-                        <Item rounded>
+                        <Item rounded style={{ backgroundColor: 'white' }}>
                             <Input placeholder='Type a message' style={{ paddingLeft: 15 }}
                                 onChangeText={this._handleMessageInputChange}
                                 value={this.state.message}
                             />
-                            <Button transparent onPress={this._sendBtnPressed}>
-                                <Icon
-                                    active
-                                    name='paper-plane'
-                                    style={{ color: "#ff5722", fontSize: 26, width: 30 }}
-                                    type='FontAwesome'
-                                />
+                            <Button transparent onPress={this._sendBtnPressed} style={{ marginRight: 5 }}>
+                                <MatIcon name="send" color={customColor.brandPrimary} size={27} />
                             </Button>
                         </Item>
                     </Body>
@@ -293,13 +290,13 @@ const styles = StyleSheet.create({
     othermessage_thumbnail_container: {},
     othermessage_thumbnail: { width: 30, height: 30, top: 0 },
     othermessage_body: { marginLeft: 5, marginRight: 50 },
-    othermessage_messageText: { color: 'black', backgroundColor: '#ececec', padding: 5, borderRadius: 5 },
-    othermessage_note: {},
+    othermessage_messageText: { color: 'black', backgroundColor: '#ffffff', padding: 5, borderRadius: 5 },
+    othermessage_note: { fontSize: 10 },
 
     authmessage_item: { marginTop: 15, flex: 1, flexDirection: 'row', marginLeft: 15, marginRight: 15, justifyContent: 'flex-end' },
     authmessage_thumbnail_container: {},
     authmessage_thumbnail: { width: 30, height: 30 },
     authmessage_body: { marginLeft: 50, marginRight: 5 },
-    authmessage_messageText: { color: 'white', backgroundColor: '#0067ff', padding: 5, borderRadius: 5 },
-    authmessage_note: {}
+    authmessage_messageText: { color: 'black', backgroundColor: '#d9f5c0', padding: 5, borderRadius: 5 },
+    authmessage_note: { fontSize: 10 }
 });

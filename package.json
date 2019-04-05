@@ -17,6 +17,7 @@
     "react-native-geolocation-service": "^2.0.0",
     "react-native-gesture-handler": "^1.1.0",
     "react-native-image-crop-picker": "^0.23.0",
+    "react-native-incall-manager": "^3.2.2",
     "react-native-maps": "^0.23.0",
     "react-native-sound": "^0.10.12",
     "react-native-triangle": "0.0.9",

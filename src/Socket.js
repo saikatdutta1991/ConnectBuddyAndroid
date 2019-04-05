@@ -11,6 +11,10 @@ YellowBox.ignoreWarnings([
     'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
 
+
+
+var previousVideoCallid;
+
 class Socket {
 
     _instance = null;
@@ -31,11 +35,22 @@ class Socket {
         /** register incoming call */
         this._instance.on('incoming_call', data => {
 
+            console.log('incoming_call', data);
+
+            /** if previous call id is same as current callid then no need to render view again*/
+            if (previousVideoCallid == data.callid) {
+                return;
+            }
+
+            /** change previous callid with new id */
+            previousVideoCallid = data.callid;
+
             NavigationService.navigate('Call', {
                 caller: {
                     _id: data.callerId,
                     name: data.callerName,
-                    image_url: data.callerImageurl
+                    image_url: data.callerImageurl,
+                    is_online: true
                 },
                 callee: {
                     _id: authuser.getId(),

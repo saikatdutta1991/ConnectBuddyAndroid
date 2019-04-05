@@ -84,6 +84,7 @@
 		5BF2F02ACAFC4E6FBA05EB63 /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D400967A6534CFC8B546844 /* libRNDeviceInfo.a */; };
 		6D6830B1AA554F66A97B8AFF /* libRNDeviceInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F21AD1ED04D448EAA0D9F379 /* libRNDeviceInfo-tvOS.a */; };
 		745B979FCE39415B8BEE292A /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB29F37CEFBD4CC8BC32305A /* libRNCWebView.a */; };
+		582463E5D542446FA98C0E1D /* libRNInCallManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 653CAC272644453789475114 /* libRNInCallManager.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -445,6 +446,8 @@
 		F21AD1ED04D448EAA0D9F379 /* libRNDeviceInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNDeviceInfo-tvOS.a"; path = "libRNDeviceInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		A1557DD7C83144BFBBD3EE3B /* RNCWebView.xcodeproj */ = {isa = PBXFileReference; name = "RNCWebView.xcodeproj"; path = "../node_modules/react-native-webview/ios/RNCWebView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		DB29F37CEFBD4CC8BC32305A /* libRNCWebView.a */ = {isa = PBXFileReference; name = "libRNCWebView.a"; path = "libRNCWebView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		2472E6660CFC4C1C8FF0792D /* RNInCallManager.xcodeproj */ = {isa = PBXFileReference; name = "RNInCallManager.xcodeproj"; path = "../node_modules/react-native-incall-manager/ios/RNInCallManager.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		653CAC272644453789475114 /* libRNInCallManager.a */ = {isa = PBXFileReference; name = "libRNInCallManager.a"; path = "libRNInCallManager.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -482,6 +485,7 @@
 				C1E437DF952048F493172057 /* libRNFirebase.a in Frameworks */,
 				5BF2F02ACAFC4E6FBA05EB63 /* libRNDeviceInfo.a in Frameworks */,
 				745B979FCE39415B8BEE292A /* libRNCWebView.a in Frameworks */,
+				582463E5D542446FA98C0E1D /* libRNInCallManager.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -684,6 +688,7 @@
 				1E05DD648D2D47C9BAE21A41 /* RNFirebase.xcodeproj */,
 				91B544C2892B403786C50A62 /* RNDeviceInfo.xcodeproj */,
 				A1557DD7C83144BFBBD3EE3B /* RNCWebView.xcodeproj */,
+				2472E6660CFC4C1C8FF0792D /* RNInCallManager.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1399,6 +1404,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-incall-manager/ios/RNInCallManager",
 				);
 			};
 			name = Debug;
@@ -1433,6 +1439,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-incall-manager/ios/RNInCallManager",
 				);
 			};
 			name = Release;
@@ -1464,6 +1471,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-incall-manager/ios/RNInCallManager",
 				);
 			};
 			name = Debug;
@@ -1494,6 +1502,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-incall-manager/ios/RNInCallManager",
 				);
 			};
 			name = Release;
@@ -1536,6 +1545,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-incall-manager/ios/RNInCallManager",
 				);
 			};
 			name = Debug;
@@ -1578,6 +1588,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-incall-manager/ios/RNInCallManager",
 				);
 			};
 			name = Release;
@@ -1619,6 +1630,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-incall-manager/ios/RNInCallManager",
 				);
 			};
 			name = Debug;
@@ -1660,6 +1672,7 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-webview/ios",
+					"$(SRCROOT)/../node_modules/react-native-incall-manager/ios/RNInCallManager",
 				);
 			};
 			name = Release;

@@ -89,7 +89,7 @@ export default class Register extends Component {
                     <Input autoComplete="off" autoCapitalize='none' placeholderTextColor={customColor.brandPrimary} style={styles.itemInput} placeholder='Email' value={this.state.email} onChangeText={(text) => this.setState({ email: text })} />
                 </Item>
                 <Item rounded style={styles.item}>
-                    <Icon style={styles.itemIcon} active name='key' type='FontAwesome' />
+                    <Icon style={styles.itemIcon} active name='lock' type='FontAwesome' />
                     <Input placeholderTextColor={customColor.brandPrimary} style={styles.itemInput} placeholder='Password' value={this.state.password} secureTextEntry={!this.state.isPassVisible} onChangeText={(text) => this.setState({ password: text })} />
                     {
                         this.state.isPassVisible ?

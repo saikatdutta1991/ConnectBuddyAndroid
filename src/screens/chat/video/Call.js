@@ -7,6 +7,8 @@ import authuser from "../../../AuthUser";
 import Socket from "../../../Socket";
 import { RTCPeerConnection, RTCIceCandidate, RTCSessionDescription, RTCView, mediaDevices } from 'react-native-webrtc';
 import InCallManager from 'react-native-incall-manager';
+import gStorage from "../../../GInmemStorage";
+import MatIcon from "react-native-vector-icons/MaterialIcons";
 
 
 /** define constants and variables section */
@@ -75,8 +77,15 @@ export default class SendCall extends React.Component {
         });
 
         /** view type is SEND_CALL then, try to connect to callee and ringging */
-        if (this.state.view_type == SEND_CALL) {
-            this._connectCallee();
+        switch (this.state.view_type) {
+            case SEND_CALL:
+                this._connectCallee();
+                break;
+
+            case RECEIVE_CALL:
+                this.setState({ call_status_text: 'Incomming call..' });
+                InCallManager.startRingtone('_BUNDLE_');
+                break;
         }
 
     }
@@ -110,7 +119,7 @@ export default class SendCall extends React.Component {
                 return this._resetAllStatesAndGoback();
             }
 
-            let isPushmsgNeeded = this.connectCalleeTimeTick === 0;
+            let isPushmsgNeeded = this.connectCalleeTimeTick === 1;
 
             this.socket.emit('connect_callee', {
                 isPushmsgNeeded: isPushmsgNeeded,
@@ -141,9 +150,9 @@ export default class SendCall extends React.Component {
         this.timeTick = 0;
         this.sendRequestTimer = setInterval(() => {
 
+            /** when ringing timeout, send end call event */
             if (this.timeTick++ >= TIMEOUT) {
-                this.setState({ call_status_text: 'Ringing timeout..' });
-                return this._resetAllStatesAndGoback();
+                this.socket.emit('end_vc', { callerId: this.state.caller._id, calleeId: this.state.callee._id });
             }
 
             this.socket.emit('send_vc', {
@@ -165,7 +174,10 @@ export default class SendCall extends React.Component {
     /** reset all states and go back */
     _resetAllStatesAndGoback() {
         this._resetAllStates();
-        setTimeout(() => { this.props.navigation.navigate('Chat'); }, 1000);
+        setTimeout(() => {
+            gStorage.currentChatUser = this.state.is_caller ? this.state.callee : this.state.caller;
+            this.props.navigation.navigate('Chat');
+        }, 1000);
     }
 
 
@@ -194,6 +206,9 @@ export default class SendCall extends React.Component {
 
         /** remove back button handler */
         BackHandler.removeEventListener('hardwareBackPress', this._handleBackPress);
+
+        InCallManager.stopRingtone();
+        InCallManager.stop();
 
     }
 
@@ -335,18 +350,21 @@ export default class SendCall extends React.Component {
     }
 
 
-
-
+    /** when calee press accept call button*/
     _handleAcceptCallButtonPress = async () => {
         this.socket.emit('accept_vc', { callerType: 'user', callerId: this.state.caller._id })
         this.setState({ view_type: ONGOIN_CALL });
         this.localStream = await getUserMedia(true, 30, true);
         this.setState({ localStreamURL: this.localStream.toURL(), view_type: ONGOIN_CALL });
+        InCallManager.stopRinetone();
     }
 
+    /** when callee press reject call button */
     _handleRejectCallButtonPress = () => {
         this.socket.emit('reject_vc', { callerType: 'user', callerId: this.state.caller._id });
-        this.props.navigation.navigate('ChatUsers');
+        this.setState({ call_status_text: 'Call rejected' });
+        this._resetAllStatesAndGoback();
+
     }
 
 
@@ -414,7 +432,7 @@ export default class SendCall extends React.Component {
                         <Button block style={{ backgroundColor: 'red' }}
                             onPress={this._handleSendCallCancelButtonPress}
                         >
-                            <Icon name='phone' type='FontAwesome' />
+                            <MatIcon name="call-end" color="white" size={27} />
                         </Button>
                     </View>
                 </ImageBackground>
@@ -428,22 +446,22 @@ export default class SendCall extends React.Component {
             <Container style={{ backgroundColor: '#ff5722b8' }}>
                 <ImageBackground source={callBackImage} style={{ width: '100%', height: '100%' }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'white', marginBottom: 50 }}>You Are Calling</Text>
-                        <Thumbnail source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8iAo-agU35oMThdEa4vWYhYWrOnELi7XgUs2SU7CvOi7-upia_w' }}
-                            style={{ width: 200, height: 200, borderRadius: 100, marginBottom: 15 }}
+                        <Text style={{ fontSize: 30, fontWeight: 'bold', color: 'white', marginBottom: 50 }}>New Incoming Call</Text>
+                        <Thumbnail source={{ uri: this.state.caller.image_url }}
+                            style={{ width: 200, height: 200, borderRadius: 100, marginBottom: 15, borderWidth: 10, borderColor: 'white' }}
                         />
-                        <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginBottom: 15 }}>Saikat Dutta</Text>
+                        <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', marginBottom: 15 }}>{this.state.caller.name}</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <ActivityIndicator size="small" color="white" />
-                            <Text style={{ color: 'white' }}>Connnecting ..</Text>
+                            <Text style={{ color: 'white' }}>{this.state.call_status_text}</Text>
                         </View>
                     </View>
                     <View style={{ postition: 'absolute', bottom: 0, width: '100%', padding: 15, flexDirection: 'row', justifyContent: 'center' }}>
                         <Button onPress={this._handleRejectCallButtonPress} block style={{ backgroundColor: 'red', justifyContent: 'center', flex: 1, marginRight: 15 }}>
-                            <Icon name='phone' type='FontAwesome' />
+                            <MatIcon name="call-end" color="white" size={27} />
                         </Button>
                         <Button onPress={this._handleAcceptCallButtonPress} block style={{ backgroundColor: 'green', justifyContent: 'center', flex: 1, marginLeft: 15 }}>
-                            <Icon name='phone' type='FontAwesome' />
+                            <MatIcon name="call" color="white" size={27} />
                         </Button>
                     </View>
                 </ImageBackground>
