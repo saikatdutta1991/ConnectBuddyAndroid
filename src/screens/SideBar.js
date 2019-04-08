@@ -8,12 +8,12 @@ import MatIcon from "react-native-vector-icons/MaterialIcons";
 
 const datas = [
     {
-        name: "Users Map",
+        name: "Map",
         route: "Home",
-        icon: "place"
+        icon: "map"
     },
     {
-        name: "Search Users",
+        name: "Search",
         route: "SearchUsers",
         icon: "search"
     },
@@ -28,7 +28,7 @@ const datas = [
         icon: "chat",
     },
     {
-        name: "My Profile",
+        name: "Account",
         route: "Profile",
         icon: "account-circle",
     },
@@ -40,7 +40,7 @@ const datas = [
     {
         name: "Sing Out",
         route: "Logout",
-        icon: "power",
+        icon: "power-settings-new",
     },
 
 ];
