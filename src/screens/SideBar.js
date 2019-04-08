@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Platform, FlatList } from 'react-native';
+import { StyleSheet, Platform, FlatList, Alert } from 'react-native';
 import { Content, Text, ListItem, Icon, Container, Left, Thumbnail, View } from "native-base";
 import authuser from "../AuthUser";
 import gStorage from "../GInmemStorage";
@@ -36,14 +36,16 @@ const datas = [
         name: "App Info",
         route: "Aboutus",
         icon: "info-outline",
-    },
-    {
-        name: "Sing Out",
-        route: "Logout",
-        icon: "power-settings-new",
-    },
-
+    }
 ];
+
+const LogoutRoute = {
+    name: "Sing Out",
+    route: "Logout",
+    icon: "power-settings-new",
+}
+
+
 
 export default class SideBar extends Component {
 
@@ -62,6 +64,23 @@ export default class SideBar extends Component {
 
         /** store main manu state to global storage for change from another component */
         gStorage.mainMenu = this;
+    }
+
+
+
+    _logoutAlert = () => {
+        Alert.alert(
+            'Confirm',
+            'Are you sure that you want to logout?',
+            [
+                {
+                    text: 'Yes', onPress: () => {
+                        this.props.navigation.navigate(LogoutRoute.route)
+                    }
+                },
+                { text: 'Cancel', onPress: () => { } }
+            ]
+        );
     }
 
 
@@ -102,6 +121,18 @@ export default class SideBar extends Component {
                         keyExtractor={this._keyExtractor}
                         renderItem={this._renderItem}
                     />
+                    <ListItem
+                        button
+
+                        onPress={this._logoutAlert}
+                    >
+                        <Left>
+                            <MatIcon name={LogoutRoute.icon} color={CustomColor.brandPrimary} size={27} />
+                            <Text style={styles.text}>
+                                {LogoutRoute.name}
+                            </Text>
+                        </Left>
+                    </ListItem>
                 </Content>
             </Container>
         );

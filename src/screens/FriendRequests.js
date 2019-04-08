@@ -7,6 +7,7 @@ import Services from '../Services';
 import moment from "moment";
 import authuser from "../AuthUser";
 import Socket from "../Socket";
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 export default class FriendRequests extends React.Component {
 
@@ -87,28 +88,34 @@ export default class FriendRequests extends React.Component {
 
 
         if (response == false) {
-            Toast.show({
-                text: 'Failed to cancel request',
-                buttonText: 'Okay',
-                type: "danger"
-            })
+            showMessage({
+                message: "Failed",
+                description: "Failed to cancel request",
+                type: "danger",
+                floating: true
+            });
+
             return;
         }
 
         if (!response.success) {
-            Toast.show({
-                text: response.data.userid,
-                buttonText: 'Okay',
-                type: "danger"
-            })
+            showMessage({
+                message: "Failed",
+                description: response.data.userid,
+                type: "danger",
+                floating: true
+            });
+
             return;
         }
 
-        Toast.show({
-            text: 'Friend request canceled successfully',
-            buttonText: 'Okay',
-            type: "success"
-        })
+
+        showMessage({
+            message: "Success",
+            description: 'Friend request canceled successfully',
+            type: "success",
+            floating: true
+        });
 
         this._getFriendRequests();
 
@@ -152,28 +159,35 @@ export default class FriendRequests extends React.Component {
 
 
         if (response == false) {
-            Toast.show({
-                text: 'Failed to reject friend request',
-                buttonText: 'Okay',
-                type: "danger"
-            })
+            showMessage({
+                message: "Failed",
+                description: 'Failed to reject friend request',
+                type: "danger",
+                floating: true
+            });
+
             return;
         }
 
         if (!response.success) {
-            Toast.show({
-                text: response.data.userid,
-                buttonText: 'Okay',
-                type: "danger"
-            })
+            showMessage({
+                message: "Failed",
+                description: response.data.userid,
+                type: "danger",
+                floating: true
+            });
+
             return;
         }
 
-        Toast.show({
-            text: 'Friend request rejected successfully',
-            buttonText: 'Okay',
-            type: "success"
-        })
+
+        showMessage({
+            message: "Success",
+            description: 'Friend request rejected successfully',
+            type: "success",
+            floating: true
+        });
+
 
         this._getFriendRequests();
 
@@ -196,28 +210,36 @@ export default class FriendRequests extends React.Component {
 
 
         if (response == false) {
-            Toast.show({
-                text: 'Failed to accept friend request',
-                buttonText: 'Okay',
-                type: "danger"
-            })
+
+            showMessage({
+                message: "Failed",
+                description: 'Failed to accept friend request',
+                type: "danger",
+                floating: true
+            });
+
             return;
         }
 
         if (!response.success) {
-            Toast.show({
-                text: response.data.userid,
-                buttonText: 'Okay',
-                type: "danger"
-            })
+
+            showMessage({
+                message: "Failed",
+                description: response.data.userid,
+                type: "danger",
+                floating: true
+            });
+
             return;
         }
 
-        Toast.show({
-            text: 'Friend request accepted successfully',
-            buttonText: 'Okay',
-            type: "success"
-        })
+        showMessage({
+            message: "Success",
+            description: 'Friend request accepted successfully',
+            type: "success",
+            floating: true
+        });
+
 
         this._getFriendRequests();
 

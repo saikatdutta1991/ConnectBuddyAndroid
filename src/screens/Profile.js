@@ -7,6 +7,7 @@ import authuser from "../AuthUser";
 import ImagePicker from 'react-native-image-crop-picker';
 import Services from '../Services';
 import gStorage from "../GInmemStorage";
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 export default class Proflie extends Component {
 
@@ -71,11 +72,14 @@ export default class Proflie extends Component {
 
         /** check if v_error */
         if (!response.success && response.type == 'v_error') {
-            Toast.show({
-                text: response.data[Object.keys(response.data)[0]],
-                buttonText: 'Okay',
-                type: "danger"
-            })
+
+            showMessage({
+                message: "Profile Update Failed",
+                description: response.data[Object.keys(response.data)[0]],
+                type: "danger",
+                floating: true
+            });
+
             return;
         }
 
@@ -94,11 +98,12 @@ export default class Proflie extends Component {
         /** set image and name to sidebar */
         gStorage.mainMenu.setState({ authuser_name: authuser.getName() });
 
-        Toast.show({
-            text: 'Profile updated successfully',
-            buttonText: 'Okay',
-            type: "success"
-        })
+        showMessage({
+            message: "Success",
+            description: "Profile updated successfully",
+            type: "success",
+            floating: true
+        });
 
 
     }
@@ -139,21 +144,26 @@ export default class Proflie extends Component {
             this.setState({ uploadActivity: false });
 
             if (!response) {
-                Toast.show({
-                    text: 'Failed to upload image',
-                    buttonText: 'Okay',
-                    type: "danger"
+
+                showMessage({
+                    message: "Failed",
+                    description: "Failed to update image",
+                    type: "danger",
+                    floating: true
                 });
+
                 return false;
             }
 
             /** check if v_error */
             if (!response.success) {
-                Toast.show({
-                    text: response.message,
-                    buttonText: 'Okay',
-                    type: "danger"
-                })
+                showMessage({
+                    message: "Failed",
+                    description: response.message,
+                    type: "danger",
+                    floating: true
+                });
+
                 return;
             }
 
@@ -167,11 +177,13 @@ export default class Proflie extends Component {
 
 
         }).catch(err => {
-            Toast.show({
-                text: 'Failed to upload image',
-                buttonText: 'Okay',
-                type: "danger"
-            })
+            showMessage({
+                message: "Failed",
+                description: 'Failed to upload image',
+                type: "danger",
+                floating: true
+            });
+
             this.setState({ uploadActivity: false });
         })
     }
@@ -195,21 +207,26 @@ export default class Proflie extends Component {
             this.setState({ uploadActivity: false });
 
             if (!response) {
-                Toast.show({
-                    text: 'Failed to upload image',
-                    buttonText: 'Okay',
-                    type: "danger"
+
+                showMessage({
+                    message: "Failed",
+                    description: 'Failed to upload image',
+                    type: "danger",
+                    floating: true
                 });
+
                 return false;
             }
 
             /** check if v_error */
             if (!response.success) {
-                Toast.show({
-                    text: response.message,
-                    buttonText: 'Okay',
-                    type: "danger"
-                })
+                showMessage({
+                    message: "Failed",
+                    description: response.message,
+                    type: "danger",
+                    floating: true
+                });
+
                 return;
             }
 
@@ -223,11 +240,13 @@ export default class Proflie extends Component {
 
 
         }).catch(err => {
-            Toast.show({
-                text: 'Failed to upload image',
-                buttonText: 'Okay',
-                type: "danger"
-            })
+            showMessage({
+                message: "Failed",
+                description: 'Failed to upload image',
+                type: "danger",
+                floating: true
+            });
+
             this.setState({ uploadActivity: false });
         })
 

@@ -15,6 +15,7 @@ import FriendRequestSendScreen from "./screens/FriendRequestSend";
 import FriendRequestsScreen from "./screens/FriendRequests";
 import SearchUsersScreen from "./screens/SearchUsers";
 import AboutusUsScreen from "./screens/Aboutus";
+import FlashMessage from "react-native-flash-message";
 
 
 const appDrawerNavigator = createDrawerNavigator(
@@ -68,12 +69,13 @@ const AppContainer = createAppContainer(switchNavigator);
 
 export default () => {
     return (
-        <Root>
+        <Root style={{ flex: 1 }}>
             <AppContainer
                 ref={navigatorRef => {
                     NavigationService.setTopLevelNavigator(navigatorRef);
                 }}
             />
+            <FlashMessage position="top" />
         </Root>
     );
 }

@@ -3,6 +3,7 @@ import { StyleSheet, View, BackHandler } from 'react-native';
 import { Container, Text, Button, H1, H3, Thumbnail, Toast, Spinner } from 'native-base';
 import Services from '../Services';
 import gStorage from "../GInmemStorage";
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 export default class AuthLoading extends React.Component {
 
@@ -62,28 +63,31 @@ export default class AuthLoading extends React.Component {
         }
 
         if (response == false) {
-            Toast.show({
-                text: 'Send request failed',
-                buttonText: 'Okay',
-                type: "danger"
-            })
+            showMessage({
+                message: "Failed",
+                description: "Send request failed",
+                type: "danger",
+                floating: true
+            });
             return;
         }
 
         if (!response.success) {
-            Toast.show({
-                text: response.data.userid,
-                buttonText: 'Okay',
-                type: "danger"
-            })
+            showMessage({
+                message: "Failed",
+                description: response.data.userid,
+                type: "danger",
+                floating: true
+            });
             return;
         }
 
-        Toast.show({
-            text: 'Friend request sent successfully',
-            buttonText: 'Okay',
-            type: "success"
-        })
+        showMessage({
+            message: "Success",
+            description: 'Friend request sent successfully',
+            type: "success",
+            floating: true
+        });
 
         setTimeout(() => {
             this._cancel();

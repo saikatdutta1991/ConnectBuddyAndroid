@@ -4,6 +4,7 @@ import { Container, Button, Icon, Input, Item, Text, Left, Right, Toast, Spinner
 import Services from '../Services';
 import authuser from "../AuthUser";
 import customColor from '../../native-base-theme/variables/customColor';
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 export default class Login extends Component {
 
@@ -41,11 +42,14 @@ export default class Login extends Component {
 
         /** check if v_error */
         if (!response.success && response.type == 'v_error') {
-            Toast.show({
-                text: response.data[Object.keys(response.data)[0]],
-                buttonText: 'Okay',
-                type: "danger"
-            })
+
+            showMessage({
+                message: "Login Failed",
+                description: response.data[Object.keys(response.data)[0]],
+                type: "danger",
+                floating: true
+            });
+
             return;
         }
 
