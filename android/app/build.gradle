@@ -164,6 +164,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-splash-screen')
     implementation project(':react-native-incall-manager')
     compile project(':WebRTCModule')
     implementation project(':react-native-webview')
