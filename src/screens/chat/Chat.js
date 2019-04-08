@@ -116,7 +116,7 @@ export default class Chat extends Component {
 
 
 
-    _keyExtractor = (item, index) => item.id;
+    _keyExtractor = (item, index) => item._id;
 
 
     _renderItem = ({ item }) => {
@@ -124,6 +124,7 @@ export default class Chat extends Component {
         let isRightItem = item.from_user == authuser.getId() ? true : false;
 
         return <MessageItem
+            key={item._id}
             message={item}
             isRightItem={isRightItem}
             currentChatUserImage={this.state.currentChatUser.image_url}
@@ -210,7 +211,7 @@ export default class Chat extends Component {
                     ref={ref => this.flatList = ref}
                     inverted
                     removeClippedSubviews={false}
-                    initialNumToRender={10}
+                    initialNumberToRender={20}
                     style={{ backgroundColor: 'transparent', marginBottom: 10 }}
                 />
 

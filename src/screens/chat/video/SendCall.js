@@ -1,6 +1,6 @@
 /** import modules section */
 import React from 'react';
-import { StyleSheet, ActivityIndicator, View, BackHandler, ImageBackground } from 'react-native';
+import { StyleSheet, ActivityIndicator, View, BackHandler, ImageBackground, Dimensions } from 'react-native';
 import { Container, Text, Thumbnail, Icon, Button, Left, Right, Header, Body, Title } from 'native-base';
 import customColor from '../../../../native-base-theme/variables/customColor';
 import authuser from "../../../AuthUser";
@@ -9,6 +9,7 @@ import { RTCPeerConnection, RTCIceCandidate, RTCSessionDescription, RTCView, med
 import InCallManager from 'react-native-incall-manager';
 import gStorage from "../../../GInmemStorage";
 import MatIcon from "react-native-vector-icons/MaterialIcons";
+import { StackActions, NavigationActions } from 'react-navigation';
 
 
 /** define constants and variables section */
@@ -18,6 +19,7 @@ const RECEIVE_CALL = 'RECEIVE_CALL';
 const ONGOIN_CALL = 'ONGOIN_CALL';
 const TIMEOUT = 30;
 const CONNECT_TIMEOUT = 30;
+const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
 
 
 /** main SendCall Component */
@@ -38,22 +40,32 @@ export default class SendCall extends React.Component {
     };
 
 
+    constructor(props) {
+        super(props);
+        this.onFocusSubscription = this.props.navigation.addListener('willFocus', this._onFocus);
+    }
+
+
 
     componentDidMount() {
+        console.log('SendCall::componentDidMount()');
         this.socket = Socket.instance(authuser.getId());
-        this.onFocusSubscription = this.props.navigation.addListener('willFocus', this._onFocus);
-        this.onBlurSubscription = this.props.navigation.addListener('willBlur', this._onBlur);
     }
 
 
     componentWillUnmount() {
+        console.log('SendCall::componentWillUnmount()');
         this.onFocusSubscription.remove();
-        this.onBlurSubscription.remove();
+        this._resetAllStates();
     }
 
 
     /** this method gets called when navigated to this activity screen each time */
     _onFocus = async () => {
+        console.log('SendCall::_onFocus()');
+        // this.localStream = await this.getUserMedia(true, 30, true);
+        // this.setState({ localStreamURL: this.localStream.toURL(), view_type: ONGOIN_CALL })
+        // return;
 
         /** add socket events listeners */
         this.socket.on('is_connected_vc', this._isConnectedHandler);
@@ -83,7 +95,7 @@ export default class SendCall extends React.Component {
                 break;
 
             case RECEIVE_CALL:
-                this.setState({ call_status_text: 'Incomming call..' });
+                await this.setState({ call_status_text: 'Incomming call..' });
                 InCallManager.startRingtone('_BUNDLE_');
                 break;
         }
@@ -145,6 +157,8 @@ export default class SendCall extends React.Component {
     /** this method keeps sendind ringing event to calee untill timeout, or accept or reject */
     _sendRingingEvents() {
 
+        InCallManager.start({ media: 'video', ringback: '_BUNDLE_' });
+
         this.setState({ call_status_text: 'Ringing..' });
 
         this.timeTick = 0;
@@ -174,9 +188,16 @@ export default class SendCall extends React.Component {
     /** reset all states and go back */
     _resetAllStatesAndGoback() {
         this._resetAllStates();
+        gStorage.currentChatUser = this.state.is_caller ? this.state.callee : this.state.caller;
+
         setTimeout(() => {
-            gStorage.currentChatUser = this.state.is_caller ? this.state.callee : this.state.caller;
-            this.props.navigation.navigate('Chat');
+
+            const resetAction = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'Chat' })],
+            });
+            this.props.navigation.dispatch(resetAction);
+
         }, 1000);
     }
 
@@ -208,6 +229,7 @@ export default class SendCall extends React.Component {
         BackHandler.removeEventListener('hardwareBackPress', this._handleBackPress);
 
         InCallManager.stopRingtone();
+        InCallManager.stopRingback();
         InCallManager.stop();
 
     }
@@ -215,12 +237,8 @@ export default class SendCall extends React.Component {
 
 
 
-    _onBlur = () => {
-        this._resetAllStates();
-    }
-
-
     _handleVideoCallEnded = () => {
+        console.log('SendCall::_handleVideoCallEnded()s')
         this.setState({ call_status_text: 'Call ended..' });
         this._resetAllStatesAndGoback();
     }
@@ -295,10 +313,7 @@ export default class SendCall extends React.Component {
 
     _handleVideoOffer = async (data) => {
 
-        this.peerConnection = createPeerConnection({
-            handleICECandidateEvent: this._handleICECandidateEvent,
-            handleAddStreamEvent: this._handleAddStreamEvent
-        });
+        this.peerConnection = this.createPeerConnection();
 
         let desc = new RTCSessionDescription(data.sdp);
 
@@ -324,15 +339,14 @@ export default class SendCall extends React.Component {
 
     _handleAccptedCall = async () => {
 
+        InCallManager.stopRingback();
+
         this.setState({ call_status_text: 'Call accepted' });
         clearInterval(this.sendRequestTimer);
 
-        this.peerConnection = createPeerConnection({
-            handleICECandidateEvent: this._handleICECandidateEvent,
-            handleAddStreamEvent: this._handleAddStreamEvent
-        });
+        this.peerConnection = this.createPeerConnection();
 
-        this.localStream = await getUserMedia(true, 30, true);
+        this.localStream = await this.getUserMedia(true, 30, true);
         this.setState({ localStreamURL: this.localStream.toURL(), view_type: ONGOIN_CALL });
         this.peerConnection.addStream(this.localStream);
 
@@ -354,9 +368,9 @@ export default class SendCall extends React.Component {
     _handleAcceptCallButtonPress = async () => {
         this.socket.emit('accept_vc', { callerType: 'user', callerId: this.state.caller._id })
         this.setState({ view_type: ONGOIN_CALL });
-        this.localStream = await getUserMedia(true, 30, true);
+        this.localStream = await this.getUserMedia(true, 30, true);
         this.setState({ localStreamURL: this.localStream.toURL(), view_type: ONGOIN_CALL });
-        InCallManager.stopRinetone();
+        InCallManager.stopRingtone();
     }
 
     /** when callee press reject call button */
@@ -382,20 +396,98 @@ export default class SendCall extends React.Component {
 
 
 
+    /**
+     * when user pressed end call button
+     */
+    _handleEndCallButton = () => {
+        this.socket.emit('end_vc', { callerId: this.state.caller._id, calleeId: this.state.callee._id });
+        this.setState({ call_status_text: 'Call ended' });
+        this._resetAllStatesAndGoback();
+    }
+
+
+
 
 
     _renderOngoingCall = () => {
         return (
-            <Container style={{}}>
-                {
-                    this.state.remoteStreamURL &&
-                    <RTCView streamURL={this.state.remoteStreamURL} style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} />
-                }
-                {
-                    this.state.localStreamURL &&
-                    <RTCView streamURL={this.state.localStreamURL} style={{ position: 'absolute', bottom: 10, right: 10, maxWidth: 100, minWidth: 50, height: 100 }} />
-                }
-            </Container>
+            <View style={{ flex: 1, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+
+                {/* <View style={{ flexDirection: 'row', zIndex: 2, position: 'absolute' }}>
+                    <ActivityIndicator size="small" color="white" />
+                    <Text style={{ color: 'white' }}>Connecting..</Text>
+                </View> */}
+
+                {/* <Thumbnail source={callBackImage}
+                    style={{ width: 200, height: 200, borderRadius: 100, marginBottom: 15, borderWidth: 10, borderColor: 'white' }}
+                /> */}
+
+                <RTCView streamURL={this.state.remoteStreamURL}
+                    objectFit="cover"
+                    style={{
+                        width: Dimensions.get('window').width,
+                        height: Dimensions.get('window').height,
+                        zIndex: 1
+                    }}
+                />
+
+                <View style={{
+                    borderWidth: 1,
+                    borderColor: "white",
+                    width: 102,
+                    height: 132,
+                    backgroundColor: 'black',
+                    position: 'absolute',
+                    zIndex: 2,
+                    right: 15,
+                    top: 15,
+                }}>
+                    {/* <Thumbnail source={callBackImage}
+                        style={{ width: 100, height: 130 }}
+                    /> */}
+                    <RTCView streamURL={this.state.localStreamURL}
+                        objectFit="cover"
+                        style={{
+                            width: 100,
+                            height: 130,
+                        }}
+                    />
+                </View>
+
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    position: 'absolute',
+                    bottom: 0, width: '100%',
+                    padding: 15,
+                    zIndex: 2
+                }}>
+                    <View style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row' }}>
+                        <MatIcon name="message" color="white" size={27}
+                            style={{ backgroundColor: 'transparent', marginRight: 30, paddingTop: 15, paddingBottom: 15 }}
+                        />
+                        <MatIcon name="mic-off" color="white" size={27}
+                            style={{ backgroundColor: 'transparent', marginRight: 30, paddingTop: 15, paddingBottom: 15 }}
+                        />
+                    </View>
+                    <View>
+                        <MatIcon name="call-end" color="white" size={27}
+                            style={{ backgroundColor: 'red', padding: 15, borderRadius: 100 }}
+                            onPress={this._handleEndCallButton}
+                        />
+                    </View>
+                    <View style={{ flex: 1, justifyContent: 'flex-start', flexDirection: 'row' }}>
+                        <MatIcon name="videocam-off" color="white" size={27} type="MaterialIcons"
+                            style={{ backgroundColor: 'transparent', marginLeft: 30, paddingTop: 15, paddingBottom: 15 }}
+                        />
+                        <MatIcon name="switch-camera" color="white" size={27} type="MaterialIcons"
+                            style={{ backgroundColor: 'transparent', marginLeft: 30, paddingTop: 15, paddingBottom: 15 }}
+                        />
+                    </View>
+
+                </View>
+            </View >
         );
     }
 
@@ -428,7 +520,7 @@ export default class SendCall extends React.Component {
                             <Text style={{ color: 'white' }}>{this.state.call_status_text}</Text>
                         </View>
                     </View>
-                    <View style={{ postition: 'absolute', bottoms: 0, width: '100%', padding: 15 }}>
+                    <View style={{ position: 'absolute', bottom: 0, width: '100%', padding: 15 }}>
                         <Button block style={{ backgroundColor: 'red' }}
                             onPress={this._handleSendCallCancelButtonPress}
                         >
@@ -456,7 +548,7 @@ export default class SendCall extends React.Component {
                             <Text style={{ color: 'white' }}>{this.state.call_status_text}</Text>
                         </View>
                     </View>
-                    <View style={{ postition: 'absolute', bottom: 0, width: '100%', padding: 15, flexDirection: 'row', justifyContent: 'center' }}>
+                    <View style={{ position: 'absolute', bottom: 0, width: '100%', padding: 15, flexDirection: 'row', justifyContent: 'center' }}>
                         <Button onPress={this._handleRejectCallButtonPress} block style={{ backgroundColor: 'red', justifyContent: 'center', flex: 1, marginRight: 15 }}>
                             <MatIcon name="call-end" color="white" size={27} />
                         </Button>
@@ -468,6 +560,59 @@ export default class SendCall extends React.Component {
             </Container >
         );
     }
+
+
+
+    /** cerate new peer connection and add event listeners 
+     * returns peerconnection object
+     */
+    createPeerConnection() {
+
+        myPeerConnection = new RTCPeerConnection(configuration);
+        myPeerConnection.onicecandidate = this._handleICECandidateEvent;
+        myPeerConnection.onaddstream = this._handleAddStreamEvent;
+
+        // myPeerConnection.ontrack = handleTrackEvent;
+        // myPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
+        // myPeerConnection.onremovetrack = handleRemoveTrackEvent;
+        // myPeerConnection.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
+        // myPeerConnection.onicegatheringstatechange = handleICEGatheringStateChangeEvent;
+        // myPeerConnection.onsignalingstatechange = handleSignalingStateChangeEvent;
+
+        return myPeerConnection;
+    }
+
+
+
+    async getUserMedia(isAudio = true, minFrameRate = 50, isFront = true) {
+
+        let videoSourceId;
+        let deviceSources = await mediaDevices.enumerateDevices();
+
+        deviceSources.forEach(deviceInfo => {
+            if (deviceInfo.kind == "video" && deviceInfo.facing == (isFront ? "front" : "back")) {
+                videoSourceId = deviceInfo.id;
+            }
+        });
+
+
+        return mediaDevices.getUserMedia({
+            audio: isAudio,
+            video: {
+                mandatory: {
+                    width: { min: 1024, ideal: 1280, max: 1920 },
+                    height: { min: 576, ideal: 720, max: 1080 },
+                    minFrameRate: minFrameRate
+                },
+                facingMode: (isFront ? "user" : "environment"),
+                optional: (videoSourceId ? [{ sourceId: videoSourceId }] : [])
+            }
+        });
+
+    }
+
+
+
 
 
 
@@ -490,59 +635,3 @@ const styles = StyleSheet.create({
         borderColor: customColor.brandPrimary
     }
 });
-
-
-
-const configuration = { "iceServers": [{ "url": "stun:stun.l.google.com:19302" }] };
-var createPeerConnection = ({
-    handleNegotiationNeededEvent,
-    handleICECandidateEvent,
-    handleTrackEvent,
-    handleRemoveTrackEvent,
-    handleICEConnectionStateChangeEvent,
-    handleICEGatheringStateChangeEvent,
-    handleSignalingStateChangeEvent,
-    handleAddStreamEvent
-}) => {
-
-    myPeerConnection = new RTCPeerConnection(configuration);
-    myPeerConnection.onicecandidate = handleICECandidateEvent;
-    myPeerConnection.onaddstream = handleAddStreamEvent;
-    myPeerConnection.ontrack = handleTrackEvent;
-    myPeerConnection.onnegotiationneeded = handleNegotiationNeededEvent;
-    myPeerConnection.onremovetrack = handleRemoveTrackEvent;
-    myPeerConnection.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
-    myPeerConnection.onicegatheringstatechange = handleICEGatheringStateChangeEvent;
-    myPeerConnection.onsignalingstatechange = handleSignalingStateChangeEvent;
-
-    return myPeerConnection;
-}
-
-
-
-var getUserMedia = async (isAudio = true, minFrameRate = 50, isFront = true) => {
-
-    let videoSourceId;
-    let deviceSources = await mediaDevices.enumerateDevices();
-
-    deviceSources.forEach(deviceInfo => {
-        if (deviceInfo.kind == "video" && deviceInfo.facing == (isFront ? "front" : "back")) {
-            videoSourceId = deviceInfo.id;
-        }
-    });
-
-
-    return mediaDevices.getUserMedia({
-        audio: isAudio,
-        video: {
-            mandatory: {
-                width: { min: 1024, ideal: 1280, max: 1920 },
-                height: { min: 576, ideal: 720, max: 1080 },
-                minFrameRate: minFrameRate
-            },
-            facingMode: (isFront ? "user" : "environment"),
-            optional: (videoSourceId ? [{ sourceId: videoSourceId }] : [])
-        }
-    });
-
-}

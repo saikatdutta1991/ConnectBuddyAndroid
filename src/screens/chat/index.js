@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { createStackNavigator } from "react-navigation";
 import ChatUsers from "./Users";
 import Chat from "./Chat";
-import CallScreen from "./video/Call";
+import SendCallScreen from "./video/SendCall";
 
 
 const stackNativagator = createStackNavigator(
     {
         ChatUsers: { screen: ChatUsers },
         Chat: { screen: Chat },
-        Call: { screen: CallScreen }
+        Call: { screen: SendCallScreen }
     },
     {
         initialRouteName: "ChatUsers",

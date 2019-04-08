@@ -21,13 +21,25 @@ export default class Users extends Component {
     componentDidMount() {
 
         /** register on focus handler */
-        this.props.navigation.addListener('willFocus', this._onFocus);
+        this.onFocusSubscription = this.props.navigation.addListener('willFocus', this._onFocus);
 
         this.socket = Socket.instance(authuser.getId());
         this.socket.on('friend_online', this._onFriendOnline);
         this.socket.on('friend_offline', this._onFriendOffline);
         this.socket.on('new_mesaage_received', this._newMessageReceived);
     }
+
+
+
+    componentWillUnmount() {
+        this.onFocusSubscription.remove();
+        this.socket.off('friend_online', this._onFriendOnline);
+        this.socket.off('friend_offline', this._onFriendOffline);
+        this.socket.off('new_mesaage_received', this._newMessageReceived);
+    }
+
+
+
 
 
     _newMessageReceived = message => {

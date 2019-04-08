@@ -55,7 +55,8 @@ class Socket {
                 callee: {
                     _id: authuser.getId(),
                     name: authuser.getName(),
-                    image_url: authuser.getImageurl()
+                    image_url: authuser.getImageurl(),
+                    is_online: true
                 },
                 view_type: 'RECEIVE_CALL',
                 is_caller: false
