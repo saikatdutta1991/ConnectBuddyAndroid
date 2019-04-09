@@ -187,7 +187,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingRight: 15,
-        paddingLeft: 15
+        paddingLeft: 15,
+        backgroundColor: customColor.brandLight
     },
     item: {
         marginBottom: 15,
