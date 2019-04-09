@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, Keyboard } from 'react-native';
-import { Container, Button, Icon, Input, Item, Text, Left, Right, Toast, Spinner } from 'native-base';
+import { StyleSheet, Image, Keyboard, View } from 'react-native';
+import { Container, Button, Icon, Input, Item, Text, Left, Right, Spinner } from 'native-base';
 import Services from '../Services';
 import authuser from "../AuthUser";
 import customColor from '../../native-base-theme/variables/customColor';
 import { showMessage, hideMessage } from "react-native-flash-message";
+import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+
 
 export default class Login extends Component {
 
@@ -17,6 +19,19 @@ export default class Login extends Component {
             password: ''
         };
     }
+
+
+
+    componentDidMount() {
+
+        GoogleSignin.configure({
+            scopes: ['email', 'profile', 'https://www.googleapis.com/auth/plus.profile.emails.read', 'https://www.googleapis.com/auth/plus.login'], // what API you want to access on behalf of the user, default is email and profile   
+            forceConsentPrompt: true, // [Android] if you want to show the authorization prompt at each login.
+        });
+
+    }
+
+
 
 
     _goForgetPassword = () => {
@@ -72,6 +87,30 @@ export default class Login extends Component {
     }
 
 
+
+    _doGoogleLogin = async () => {
+
+        try {
+            await GoogleSignin.hasPlayServices();
+
+            if (await GoogleSignin.isSignedIn()) {
+                await GoogleSignin.signOut();
+            }
+
+            const userInfo = await GoogleSignin.signIn();
+
+            alert(JSON.stringify(userInfo))
+        } catch (error) {
+            alert(error.message)
+        }
+
+
+    }
+
+
+
+
+
     render() {
 
         return (
@@ -123,6 +162,18 @@ export default class Login extends Component {
                         </Button>
                     </Right>
                 </Item>
+
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 30 }}>OR</Text>
+                <View style={{ width: '100%', justifyContent: 'center', flexDirection: 'column', marginTop: 30 }}>
+
+                    <GoogleSigninButton
+                        style={{ width: '100%', height: 52 }}
+                        size={GoogleSigninButton.Size.Wide}
+                        color={GoogleSigninButton.Color.Light}
+                        onPress={this._doGoogleLogin}
+                        disabled={this.state.isSigninInProgress} />
+
+                </View>
 
             </Container>
         );

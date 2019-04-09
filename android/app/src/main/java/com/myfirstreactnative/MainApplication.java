@@ -3,6 +3,7 @@ package com.myfirstreactnative;
 import android.app.Application;
 import com.myfirstreactnative.AppStarterPackage;
 import com.facebook.react.ReactApplication;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.zxcpoiu.incallmanager.InCallManagerPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
@@ -40,6 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNGoogleSigninPackage(),
             new SplashScreenReactPackage(),
             new InCallManagerPackage(),
             new RNCWebViewPackage(),
