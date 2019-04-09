@@ -158,7 +158,8 @@ const styles = StyleSheet.create({
     headerTextName: {
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 20
+        fontSize: 20,
+        marginTop: 2
     },
     headerTextEmail: {
         color: 'white',

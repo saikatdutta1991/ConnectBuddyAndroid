@@ -469,6 +469,32 @@ module.exports.login = async (email, password) => {
 
 
 
+module.exports.doGoogleAuth = async (idToken) => {
+
+    console.log('Service::doGoogleAuth()');
+
+    return fetch(Endpoints.googleauth, {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id_token: idToken,
+        })
+    }).then(response => {
+        console.log('doGoogleAuth', response);
+        return response.json();
+    }).catch(err => {
+        console.log('err', err);
+        alert('Unkonwn error : ' + err.message);
+        return false;
+    })
+
+}
+
+
+
+
 module.exports.register = async (name, email, password) => {
 
     console.log('calling register api')

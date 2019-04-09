@@ -6,6 +6,7 @@ import authuser from "../AuthUser";
 import customColor from '../../native-base-theme/variables/customColor';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+import { google_oauth_web_client_id } from "../ApiKeys";
 
 
 export default class Login extends Component {
@@ -25,8 +26,9 @@ export default class Login extends Component {
     componentDidMount() {
 
         GoogleSignin.configure({
-            scopes: ['email', 'profile', 'https://www.googleapis.com/auth/plus.profile.emails.read', 'https://www.googleapis.com/auth/plus.login'], // what API you want to access on behalf of the user, default is email and profile   
+            scopes: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/plus.profile.emails.read', 'https://www.googleapis.com/auth/plus.login'], // what API you want to access on behalf of the user, default is email and profile   
             forceConsentPrompt: true, // [Android] if you want to show the authorization prompt at each login.
+            webClientId: google_oauth_web_client_id
         });
 
     }
@@ -90,6 +92,15 @@ export default class Login extends Component {
 
     _doGoogleLogin = async () => {
 
+        showMessage({
+            message: "Google Auth",
+            description: 'Google authentication is in progress',
+            type: "info",
+            floating: true,
+            autoHide: false
+        });
+
+
         try {
             await GoogleSignin.hasPlayServices();
 
@@ -99,9 +110,53 @@ export default class Login extends Component {
 
             const userInfo = await GoogleSignin.signIn();
 
-            alert(JSON.stringify(userInfo))
+            let response = await Services.doGoogleAuth(userInfo.idToken);
+
+            if (!response.success) {
+
+                showMessage({
+                    message: "Google Auth Failed",
+                    description: response.message,
+                    type: "danger",
+                    floating: true
+                });
+
+                return;
+
+            }
+
+
+            /** store auth user data */
+            await authuser.setId(response.data.user._id)
+                .setAuthToken(response.data.authToken)
+                .setName(response.data.user.name)
+                .setEmail(response.data.user.email)
+                .setImageurl(response.data.user.image_url)
+                .setDeviceToken('')
+                .save();
+
+
+            showMessage({
+                message: "Google Auth Success",
+                description: 'You have been logged in successfully',
+                type: "success",
+                floating: true
+            });
+
+
+            /** redirect to authloading */
+            this.props.navigation.navigate('AuthLoading');
+
+
         } catch (error) {
-            alert(error.message)
+
+            showMessage({
+                message: "Google Auth",
+                description: error.message,
+                type: "danger",
+                floating: true
+            });
+
         }
 
 
