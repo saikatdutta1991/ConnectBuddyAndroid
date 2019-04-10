@@ -19,6 +19,21 @@ export default class Home extends Component {
     }
 
 
+    componentDidMount() {
+        this.willFocusSubscription = this.props.navigation.addListener('willFocus', this._onFocus);
+    }
+
+
+    _onFocus = () => {
+        this._searchUsers();
+    }
+
+
+    componentWillUnmount() {
+        this.willFocusSubscription.remove();
+    }
+
+
     /** call service for searching users */
     _searchUsers = async () => {
 

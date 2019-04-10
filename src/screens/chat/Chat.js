@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, View, Image } from 'react-native';
-import { Container, Content, Header, Left, Body, Right, Button, Item, Icon, Title, Subtitle, Thumbnail, ListItem, Text, Footer, Input } from 'native-base';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Container, Header, Left, Body, Right, Button, Item, Icon, Title, Subtitle, Thumbnail, Text, Footer, Input } from 'native-base';
 import gStorage from "../../GInmemStorage";
 import authuser from "../../AuthUser";
 import customColor from '../../../native-base-theme/variables/customColor';
@@ -12,7 +12,7 @@ import MatIcon from "react-native-vector-icons/MaterialIcons";
 
 export default class Chat extends Component {
 
-    socket;
+    socket; shouldSendTypingTimeout; shouldSendTyping = true; istypingTimeout;
 
     constructor(props) {
 
@@ -23,7 +23,8 @@ export default class Chat extends Component {
             currentChatUser: gStorage.currentChatUser,
             message: '',
             messages: [],
-            isFriendOnlie: gStorage.currentChatUser.is_online
+            isFriendOnlie: gStorage.currentChatUser.is_online,
+            isTyping: false
         };
 
     }
@@ -39,16 +40,37 @@ export default class Chat extends Component {
         this.socket.on('friend_offline', this._onFriendOffline);
         this.socket.on('new_mesaage_received', this._newMessageReceived);
         this.socket.on('new_message_sent', this._newMessageSent);
+        this.socket.on('user_typing', this._onUserTyping);
     }
 
 
     componentWillUnmount() {
 
+        clearTimeout(this.istypingTimeout);
+        clearTimeout(this.shouldSendTypingTimeout);
         this.willFocusSubscription.remove();
         this.socket.off('friend_online', this._onFriendOnline);
         this.socket.off('friend_offline', this._onFriendOffline);
         this.socket.off('new_mesaage_received', this._newMessageReceived);
         this.socket.off('new_message_sent', this._newMessageSent);
+        this.socket.off('user_typing', this._onUserTyping);
+
+    }
+
+
+    /** listen on user typig event */
+    _onUserTyping = (data) => {
+
+        /** is current chat user is not emiting this event */
+        if (this.state.currentChatUser._id != data.from_user) {
+            return;
+        }
+
+        this.setState({ isTyping: true })
+        clearTimeout(this.istypingTimeout);
+        this.istypingTimeout = setTimeout(() => { this.setState({ isTyping: false }) }, 2000);
+
+
 
     }
 
@@ -149,7 +171,16 @@ export default class Chat extends Component {
     }
 
     _handleMessageInputChange = (message) => {
-        this.setState({ message: message })
+        this.setState({ message: message });
+
+        /** handle typing event emit */
+        if (this.shouldSendTyping) {
+            this.socket.emit('typing', { to_user: this.state.currentChatUser._id });
+            this.shouldSendTyping = false;
+            this.shouldSendTypingTimeout = setTimeout(() => { this.shouldSendTyping = true; }, 2000);
+            console.log('Send I am typing.')
+        }
+
     }
 
 
@@ -185,7 +216,7 @@ export default class Chat extends Component {
 
                 <Header>
                     <Left>
-                        <Button transparent onPress={() => this.props.navigation.goBack()}>
+                        <Button transparent onPress={() => this.props.navigation.navigate('ChatUsers')}>
                             <Icon name='arrow-back' />
                         </Button>
                     </Left>
@@ -194,7 +225,10 @@ export default class Chat extends Component {
                     </Left>
                     <Body>
                         <Title>{this.state.currentChatUser.name}</Title>
-                        <Subtitle>{this.state.isFriendOnlie ? 'online' : 'offline'}</Subtitle>
+                        <Subtitle>
+                            {this.state.isFriendOnlie ? 'online' : 'offline'}
+                            {this.state.isTyping ? ' . typing..' : ''}
+                        </Subtitle>
                     </Body>
                     <Right>
                         <Button transparent onPress={this._initiateVideoCall}>

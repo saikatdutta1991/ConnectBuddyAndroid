@@ -27,15 +27,31 @@ export default class FriendRequests extends React.Component {
 
     async componentDidMount() {
 
+        this.willFocusSubscription = this.props.navigation.addListener('willFocus', this._onFocus);
         this.socket = await Socket.instance(authuser.getId());
         this.socket.on('new_friend_request', this._onFriendRequestAcceptRejectReceived);
         this.socket.on('friend_request_accepted', this._onFriendRequestAcceptRejectReceived);
         this.socket.on('friend_request_rejected', this._onFriendRequestAcceptRejectReceived);
-
-        this.props.navigation.addListener('willFocus', payload => {
-            this._getFriendRequests();
-        })
     }
+
+
+    componentWillUnmount() {
+        this.willFocusSubscription.remove();
+        this.socket.off('new_friend_request', this._onFriendRequestAcceptRejectReceived);
+        this.socket.off('friend_request_accepted', this._onFriendRequestAcceptRejectReceived);
+        this.socket.off('friend_request_rejected', this._onFriendRequestAcceptRejectReceived);
+    }
+
+
+
+
+
+    _onFocus = () => {
+        this._getFriendRequests();
+    }
+
+
+
 
     _onRefresh = () => {
         this._getFriendRequests();
