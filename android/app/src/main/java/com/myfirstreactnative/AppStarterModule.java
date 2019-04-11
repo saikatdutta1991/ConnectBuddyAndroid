@@ -5,6 +5,8 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.myfirstreactnative.MainActivity;
 import com.facebook.react.bridge.ReactMethod;
 import android.content.Intent;
+import com.myfirstreactnative.ForeGroundService;
+import android.os.Build;
 
 class AppStarterModule extends ReactContextBaseJavaModule {
 
@@ -24,4 +26,20 @@ class AppStarterModule extends ReactContextBaseJavaModule {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
+
+    @ReactMethod
+    void startMyForegroundService() {
+        ReactApplicationContext context = getReactApplicationContext();
+        Intent intent = new Intent(context, ForeGroundService.class);
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            context.startForegroundService(intent);
+        else
+            context.startService(intent);
+
+        
+    }
+
+
 }
